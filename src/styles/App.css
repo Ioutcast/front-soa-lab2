@@ -62,7 +62,7 @@ main{
 
 .left-section {
   display: flex;
-  background-color: lightgray;
+  background-color: #d5d5d5;
   padding: 20px;
   flex-direction: column;
   align-items: center;
@@ -78,11 +78,24 @@ main{
 .form-container {
   display: flex;
   justify-content: center;
-  height: 100vh;
 }
 
 .form-container .ant-form {
   max-width: 300px;
   width: 100%;
   padding: 20px;
+}
+.form-worker-changer{
+  display: inline-block;
+  justify-content: center;
+}
+.form-container .add-btn {
+  max-width: 300px;
+  width: 100%;
+  padding: 20px;
+}
+.container2 {
+  display: flex;
+  justify-content: space-around; /* Горизонтальное центрирование */
+  align-items: center; /* Вертикальное центрирование */
 }
