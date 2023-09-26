@@ -1,15 +1,22 @@
 import './styles/App.css';
-import LeftSideBar from "./components/LeftSideBar";
-import {WorkesTable} from "./components/WorkesTable";
-
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Hr} from "./pages/Hr";
+import SideBar from "./components/SideBar";
+import {WorkerTable} from "./pages/WorkerTable";
+import {Extra} from "./pages/Extra";
 
 function App() {
-  return (
-      <>
-      <LeftSideBar />
-      <WorkesTable/>
-      </>
-  );
+    return (
+        <BrowserRouter>
+            <SideBar>
+                <Routes>
+                    <Route path="/" element={<WorkerTable/>}/>
+                    <Route path="/extra" element={<Extra/>}/>
+                    <Route path="/hr" element={<Hr/>}/>
+                </Routes>
+            </SideBar>
+        </BrowserRouter>
+    );
 }
 
 export default App;
