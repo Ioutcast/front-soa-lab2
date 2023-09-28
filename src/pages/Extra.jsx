@@ -25,12 +25,12 @@ export const Extra = () => {
             children: [
                 {
                     title: "X",
-                    dataIndex: ["Coordinate", "coordinates_x"],
+                    dataIndex: ["Coordinate", "x"],
                     key: "5"
                 },
                 {
                     title: "Y",
-                    dataIndex: ["Coordinate", "coordinates_y"],
+                    dataIndex: ["Coordinate", "y"],
                     key: "5",
                 },
             ]
@@ -85,7 +85,16 @@ export const Extra = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await WorkerService.getCount()
+            console.log("fetchData Extra")
+            const response = await WorkerService.getCount({ headers: {
+                    'Accept': 'application/xml',
+                    'Access-Control-Allow-Origin': '*'
+                },}).catch((error) => {
+                console.log(error);
+            })
+
+
+            console.log(response)
             parseString(response.data, (err, result) => {
                 if (err) {
                     console.error("Ошибка при парсинге XML:", err);
@@ -117,26 +126,49 @@ export const Extra = () => {
             fetchData();
         }
     }, [showTable]);
-
     const [form] = Form.useForm();
     const [count, setCount] = useState(null);
+    const fetchCount = async (data,condition) => {
+        try {
+            setLoading(true);
+            console.log("fetchCount Extra")
+            const response = await WorkerService.getByEndDateGl(data,condition,{ headers: {
+                    'Accept': 'application/xml',
+                    'Access-Control-Allow-Origin': '*'
+                },}).catch((error) => {
+                console.log(error);
+            })
 
+            console.log("fetchCount Extra response")
+            console.log(response)
+            //todo undefined
+            parseString(response.data, (err, result) => {
+                if (err) {
+                    console.error("Ошибка при парсинге XML:", err);
+                } else {
+                    let data = result.NumberOfWorkers
+                    const transformedObj = {};
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            transformedObj[key] = data[key][0];
+                        }
+                    }
+                    setCount(transformedObj.number);
+                    // console.log(transformedObj.number)
+                }
+            });
+        } catch (error) {
+            console.error('Ошибка при получении данных:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
     const onFinish = (values) => {
-        const {date, condition} = values;
-
-        // const filteredObjects = objects.filter((obj) => {
-        //     const endDate = new Date(obj.endDate);
-        //     const inputDate = new Date(date);
-        //
-        //     if (condition === 'greater') {
-        //         return endDate > inputDate;
-        //     } else if (condition === 'lower') {
-        //         return endDate < inputDate;
-        //     }
-        //     return false;
-        // });
+        let {date, condition} = values;
+        date = new Date(date);
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        fetchCount(formattedDate,condition)
         form.resetFields();
-        setCount(2);
     };
     return (
         <>

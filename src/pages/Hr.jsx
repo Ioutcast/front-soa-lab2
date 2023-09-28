@@ -83,34 +83,11 @@ export const Hr = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
 
-
-    const onFinish = (values) => {
-        setLoading(true);
-        const { workerId, idFrom, idTo } = values;
-
-        // Выполните запрос API здесь, используя значения workerId, idFrom и idTo.
-        // Например:
-        // axios.post(`/move/${workerId}/${idFrom}/${idTo}`).then((response) => {
-        //   setLoading(false);
-        //   // Обработка успешного ответа
-        // }).catch((error) => {
-        //   setLoading(false);
-        //   // Обработка ошибки
-        // });
-
-        // Вместо приведенного выше кода, здесь вы должны отправить запрос API и обработать результаты.
-        // Пока здесь мы считаем, что операция выполнена успешно и просто сбрасываем форму.
-
-        form.resetFields();
-        setLoading(false);
-        setShowTable(!showTable);
-        // onMove();
-    };
-    const fetchData = async () => {
+    const fetchData = async (workerId, idFrom, idTo) => {
         try {
             setLoading(true);
-            const response = await WorkerService.getCount()
-            parseString(response.data, (err, result) => {
+            const response = await WorkerService.postMove(workerId, idFrom, idTo)
+            if (response.data) { parseString(response.data, (err, result) => {
                 if (err) {
                     console.error("Ошибка при парсинге XML:", err);
                 } else {
@@ -125,12 +102,23 @@ export const Hr = () => {
                     console.log(transformedObj)
                 }
             });
-            setShowTable(true);
+                setShowTable(true);
+            }
+            else {
+                console.warn("Ответ сервера не содержит данных.");
+            }
         } catch (error) {
             console.error('Ошибка при получении данных:', error);
         } finally {
             setLoading(false);
         }
+    };
+    const onFinish = (values) => {
+        setLoading(true);
+        const { workerId, idFrom, idTo } = values;
+        fetchData(workerId, idFrom, idTo)
+        setLoading(false);
+        form.resetFields();
     };
     return (
         <>

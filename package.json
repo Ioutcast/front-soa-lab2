@@ -17,7 +17,8 @@
     "stream": "^0.0.2",
     "timers": "^0.1.1",
     "web-vitals": "^2.1.4",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "proxy": "http://localhost:4000"
   },
   "scripts": {
     "start": "react-scripts start",
