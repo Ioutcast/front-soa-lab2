@@ -1,14 +1,8 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import xml2js, {parseString} from 'xml2js';
-import {
-    Button, Table, Tag, Modal,
-    DatePicker,
-    Form,
-    Input,
-    InputNumber,
-    Select
-} from 'antd';
+import {Button, DatePicker, Form, Input, InputNumber, Modal, Select, Table} from 'antd';
+
 const { RangePicker } = DatePicker;
 const {Option} = Select;
 const {Item} = Form;
@@ -563,10 +557,28 @@ export const WorkerTable = () => {
         }, 3000);
     };
 
-    const onFinish1 = (values: any) => {
+    const onFinish1 = () => {
         form4.validateFields()
             .then(values => {
                 console.log('Form values:', values);
+                values.endDate = values.StartDateEndDate[1].$d.toISOString().split('T')[0];
+                values.creationDate = values.CreationDate.$d.toISOString();
+                values.startDate =  values.StartDateEndDate[0].$d.toISOString().replace('T', ' ').replace('Z', '');
+                delete values.StartDateEndDate
+                console.log('Form values:', values);
+                values.Organization = {
+                    id: values.organization_id,
+                    fullName: values.organization_fullName,
+                    annualTurnover: values.organization_annualTurnover,
+                };
+                delete values.organization_annualTurnover;delete values.organization_fullName;delete values.CreationDate;
+                delete values.organization_id;
+                const coord = {
+                    x: values.CoordinateX,
+                    y: values.CoordinateY,
+                };
+                delete values.CoordinateX;delete values.CoordinateY;
+                values.Coordinates = coord;
                 const builder = new xml2js.Builder({rootName :'WorkerInfo'});
                 const xmlData = builder.buildObject(values);
                 console.log(xmlData)
@@ -699,16 +711,19 @@ export const WorkerTable = () => {
                     <Form.Item name="StartDateEndDate" rules={[{required: true}]} label="Start/End">
                         <RangePicker showTime/>
                     </Form.Item>
-                    <Form.Item name="Salary" rules={[{required: true}]} label="Salary">
+                    <Form.Item name="salary" rules={[{required: true}]} label="Salary">
                         <InputNumber/>
                     </Form.Item>
-                    <Form.Item name="Position" rules={[{required: true,}]} label="Position">
+                    <Form.Item name="position" rules={[{required: true,}]} label="Position">
                         <Input/>
                     </Form.Item>
-                    <Form.Item name="Organization.fullname"  label="fullname">
+                    <Form.Item name="organization_id"  label="id">
+                        <Input rules={[{required: true}]} placeholder="id"/>
+                    </Form.Item>
+                    <Form.Item name="organization_fullName"  label="fullname">
                         <Input rules={[{required: true}]} placeholder="fullname"/>
                     </Form.Item>
-                    <Form.Item name="Organization.annualTurnover"  label="annualTurnover">
+                    <Form.Item name="organization_annualTurnover"  label="annualTurnover">
                         <Input rules={[{required: true}]} placeholder="annualTurnover"/>
                     </Form.Item>
                 </Form>
