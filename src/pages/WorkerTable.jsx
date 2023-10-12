@@ -585,10 +585,9 @@ export const WorkerTable = () => {
                 const builder = new xml2js.Builder({rootName: 'CreateWorkerRequest'});
                 const xmlData = builder.buildObject(values);
                 console.log(xmlData)
-                const response =await axios.post(`https://localhost:9000/company/workers`, xmlData,{
+                const response = await axios.post(`https://localhost:9000/company/workers`, xmlData,{
                     headers: {
-                        'Accept': 'application/xml',
-                        'Access-Control-Allow-Origin': '*'
+                        'Content-Type': 'text/xml'
                     },
                 }).catch((error) => {
                     console.log(error);
