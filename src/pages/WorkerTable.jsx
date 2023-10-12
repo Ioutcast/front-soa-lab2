@@ -687,9 +687,11 @@ export const WorkerTable = () => {
                     <Form.Item name="name" rules={[{required: true}]} label="Name">
                         <Input />
                     </Form.Item>
-                    <Form.Item  rules={[{required: true}]} label="Coordinate">
-                        <Input name="CoordinateX" rules={[{required: true}]} style={{marginBottom: 10}} placeholder="x"/>
-                        <Input name="CoordinateY" rules={[{required: true}]} placeholder="y"/>
+                    <Form.Item name="CoordinateX" rules={[{required: true}]} label="CoordinateX">
+                        <Input rules={[{required: true}]} style={{marginBottom: 10}} placeholder="x"/>
+                    </Form.Item>
+                    <Form.Item  name="CoordinateY" rules={[{required: true}]} label="CoordinateY">
+                        <Input  rules={[{required: true}]} placeholder="y"/>
                     </Form.Item>
                     <Form.Item name="CreationDate" rules={[{required: true}]} label="CreationDate">
                         <DatePicker />
