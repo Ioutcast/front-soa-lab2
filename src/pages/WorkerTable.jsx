@@ -579,7 +579,7 @@ export const WorkerTable = () => {
                 };
                 delete values.CoordinateX;delete values.CoordinateY;
                 values.Coordinates = coord;
-                const builder = new xml2js.Builder({rootName :'WorkerInfo'});
+                const builder = new xml2js.Builder({rootName :'CreateWorkerRequest'});
                 const xmlData = builder.buildObject(values);
                 console.log(xmlData)
             }).catch(error => {
