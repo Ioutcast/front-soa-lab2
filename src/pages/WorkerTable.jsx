@@ -17,26 +17,25 @@ export const WorkerTable = () => {
         pageSize: 10,
         total: 0,
     });
-    const [filterOperator, setFilterOperator] = useState('lte'); // По умолчанию, <=
-    const [filter, setFilter] = useState(''); // По умолчанию, <=
-
-    const handleDelete = () => {
-        console.log("handleDelete")
-    };
-    const handleUpdate = () => {
-        console.log("up")
-    };
+    const [filterState, setFilterState] = useState({});
     const loadData = async (pageCur) => {
         try {
             const queryParams = new URLSearchParams();
-            sortFields.forEach((field, index) => {
-                queryParams.append(`sortElement`, field);
-            });
+            for (const columnKey in filterState) {
+                const filter = filterState[columnKey];
+                if (filter.operator && filter.value) {
+                    queryParams.append("filter",`${columnKey}[${filter.operator}]=${filter.value}`);
+                }
+            }
+            // sortFields.forEach((field, index) => {
+            //     queryParams.append(`sortElement`, field);
+            // });
+            queryParams.append(`sortElement`, "id");
             queryParams.append('pageSize', String(pagination.pageSize));
-            queryParams.append('page', String(parseInt(pageCur)-1))
+            queryParams.append('page', String(parseInt(pageCur)-1));
             const queryString = queryParams.toString();
             console.log(queryString)
-            const url = `http://localhost:9000/company/workers?${queryString}`;
+            const url = `https://localhost:9000/company/workers?${queryString}`;
             const response = await axios.get(url)
                 .catch((err) => {
                     console.log(err);
@@ -46,11 +45,12 @@ export const WorkerTable = () => {
                     if (err) {
                         console.error("Ошибка при парсинге XML:", err);
                     } else {
-                        const content = result.PageImpl.content[0].content;
-                        const pageData = result.PageImpl;
+                        const content = result.SortedWorkersResponse.content[0].WorkerFullInfo;
+                        const pageData = result.SortedWorkersResponse;
+                        console.log(pageData.pagenumber[0])
                         const newPagination = {
-                            current: parseInt(pageData.number[0])+1,
-                            pageSize: parseInt(pageData.size[0]),
+                            current: parseInt(pageData.pagenumber[0])+1,
+                            pageSize: parseInt(pageData.totalElements[0]),
                             total: parseInt(pageData.totalElements[0]),
                         };
                         setPagination(newPagination);
@@ -84,19 +84,17 @@ export const WorkerTable = () => {
             setLoading(false)
         }
     };
+
     useEffect(() => {
         setLoading(true)
         loadData(pagination.current)
             .catch((err) => {
                 console.log(err);
             });
-    }, [pagination.current])
-    const handleAdd = () => {
-        console.log("handleAdd")
-    };
-    const handleOnFilter = () => {
-        console.log("handleOnFilter")
-    };
+    }, [pagination.current,filterState])
+    const handleAdd = () =>{
+        console.log("a")
+    }
     const handleSort = (field) => {
         console.log(field)
         const newSortFields = [...sortFields];
@@ -110,61 +108,81 @@ export const WorkerTable = () => {
         setIsSortAscending(!isSortAscending);
         // setPagination({ ...pagination, current: 1 }); // Сбросите текущую страницу на 1 при изменении сортировки
     };
+    const createFilterDropdown = (columnKey) => ({ confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+            <Select
+                style={{ width: 80, marginRight: 8 }}
+                onChange={(value) => {
+                    setFilterState({
+                        ...filterState,
+                        [columnKey]: {
+                            ...filterState[columnKey],
+                            operator: value,
+                        },
+                    });
+                }}
+            >
+                <Option value="lte">{'<='}</Option>
+                <Option value="gte">{'>='}</Option>
+                <Option value="eq">{'='}</Option>
+                <Option value="ne">{'!='}</Option>
+                <Option value="gt">{'>'}</Option>
+                <Option value="lt">{'<'}</Option>
+            </Select>
+            <Input
+                placeholder="Filter"
+                value={filterState[columnKey]?.value}
+                onChange={(e) => {
+                    setFilterState({
+                        ...filterState,
+                        [columnKey]: {
+                            ...filterState[columnKey],
+                            value: e.target.value,
+                        },
+                    });
+                }}
+                style={{ width: 188, marginBottom: 8, display: 'block' }}
+            />
+            <Button
+                type="primary"
+                onClick={() => {
+                    confirm();
+                }}
+            >
+                Filter
+            </Button>
+            <Button onClick={() => {
+                setFilterState((prevState) => ({
+                    ...prevState,
+                    [columnKey]: {
+                        operator: undefined,
+                        value: undefined,
+                    },
+                }));
+                clearFilters();
+            }}>
+                Reset
+            </Button>
+        </div>
+    );
     const columns = [
-
         {
             key: "1",
             title: "ID",
             dataIndex: "id",
             sorter: true,
-            sortOrder: sortFields.includes('id') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: (field: string)=> {
-                console.log(field)
-                const newSortFields = [...sortFields];
-                const index = newSortFields.indexOf(field);
-                if (index !== -1) {
-                    newSortFields.splice(index, 1);
-                } else {
-                    newSortFields.push(field);
-                }
-                setSortFields(newSortFields);
-            },filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <Select
-                        defaultValue="lte"
-                        style={{ width: 80, marginRight: 8 }}
-                        onChange={(value) => setFilterOperator(value)}
-                    >
-                        <Option value="lte">{'<='}</Option>
-                        <Option value="gte">{'>='}</Option>
-                    </Select>
-                    <Input
-                        placeholder="Filter"
-                        value={selectedKeys[0]}
-                        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                        onPressEnter={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button onClick={() => {
-                        setFilter('');
-                        clearFilters();
-                    }}>
-                        Reset
-                    </Button>
-                </div>
-            ),
+            // onSort: (field: string)=> {
+            //     console.log(field)
+            //     const newSortFields = [...sortFields];
+            //     const index = newSortFields.indexOf(field);
+            //     if (index !== -1) {
+            //         newSortFields.splice(index, 1);
+            //     } else {
+            //         newSortFields.push(field);
+            //     }
+            //     setSortFields(newSortFields);
+            // },
+            filterDropdown: createFilterDropdown("id"),
         },
         {
             key: "2",
@@ -172,489 +190,112 @@ export const WorkerTable = () => {
             dataIndex: "name",
             sorter: true,
             sortOrder: sortFields.includes('name') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: () => handleSort('name'),
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <Select
-                        defaultValue="lte"
-                        style={{ width: 80, marginRight: 8 }}
-                        onChange={(value) => setFilterOperator(value)}
-                    >
-                        <Option value="lte">{'<='}</Option>
-                        <Option value="gte">{'>='}</Option>
-                    </Select>
-                    <Input
-                        placeholder="Filter"
-                        value={selectedKeys[0]}
-                        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                        onPressEnter={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button onClick={() => {
-                        setFilter('');
-                        clearFilters();
-                    }}>
-                        Reset
-                    </Button>
-                </div>
-            ),
+            filterDropdown: createFilterDropdown("name")
         },
         {
             title: "Coordinate",
-            sorter: true,
-            sortOrder: sortFields.includes('Coordinate') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: () => handleSort('Coordinate'),
             children: [
                 {
                     title: "X",
                     dataIndex: ["Coordinate", "x"],
                     key: "5",
-                    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                        <div style={{ padding: 8 }}>
-                            <Select
-                                defaultValue="lte"
-                                style={{ width: 80, marginRight: 8 }}
-                                onChange={(value) => setFilterOperator(value)}
-                            >
-                                <Option value="lte">{'<='}</Option>
-                                <Option value="gte">{'>='}</Option>
-                            </Select>
-                            <Input
-                                placeholder="Filter"
-                                value={selectedKeys[0]}
-                                onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                                onPressEnter={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                                style={{ width: 188, marginBottom: 8, display: 'block' }}
-                            />
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                            >
-                                Filter
-                            </Button>
-                            <Button onClick={() => {
-                                setFilter('');
-                                clearFilters();
-                            }}>
-                                Reset
-                            </Button>
-                        </div>
-                    ),
+                    sorter: true,
+                    filterDropdown: createFilterDropdown("x")
                 },
                 {
                     title: "Y",
                     dataIndex: ["Coordinate", "y"],
                     key: "55",
-                    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                        <div style={{ padding: 8 }}>
-                            <Select
-                                defaultValue="lte"
-                                style={{ width: 80, marginRight: 8 }}
-                                onChange={(value) => setFilterOperator(value)}
-                            >
-                                <Option value="lte">{'<='}</Option>
-                                <Option value="gte">{'>='}</Option>
-                            </Select>
-                            <Input
-                                placeholder="Filter"
-                                value={selectedKeys[0]}
-                                onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                                onPressEnter={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                                style={{ width: 188, marginBottom: 8, display: 'block' }}
-                            />
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                            >
-                                Filter
-                            </Button>
-                            <Button onClick={() => {
-                                setFilter('');
-                                clearFilters();
-                            }}>
-                                Reset
-                            </Button>
-                        </div>
-                    ),
-                },
-            ]
-        },
-        {
-            key: "6",
-            title: "CreationDate",
-            dataIndex: "creationDate",
-            sorter: true,
-            sortOrder: sortFields.includes('creationDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: () => handleSort('creationDate'),
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <Select
-                        defaultValue="lte"
-                        style={{ width: 80, marginRight: 8 }}
-                        onChange={(value) => setFilterOperator(value)}
-                    >
-                        <Option value="lte">{'<='}</Option>
-                        <Option value="gte">{'>='}</Option>
-                    </Select>
-                    <Input
-                        placeholder="Filter"
-                        value={selectedKeys[0]}
-                        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                        onPressEnter={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button onClick={() => {
-                        setFilter('');
-                        clearFilters();
-                    }}>
-                        Reset
-                    </Button>
-                </div>
-            ),
-        },
-        {
-            key: "7",
-            title: "StartDate",
-            dataIndex: "startDate",
-            sorter: true,
-            sortOrder: sortFields.includes('startDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: () => handleSort('startDate'),
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <Select
-                        defaultValue="lte"
-                        style={{ width: 80, marginRight: 8 }}
-                        onChange={(value) => setFilterOperator(value)}
-                    >
-                        <Option value="lte">{'<='}</Option>
-                        <Option value="gte">{'>='}</Option>
-                    </Select>
-                    <Input
-                        placeholder="Filter"
-                        value={selectedKeys[0]}
-                        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                        onPressEnter={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button onClick={() => {
-                        setFilter('');
-                        clearFilters();
-                    }}>
-                        Reset
-                    </Button>
-                </div>
-            ),
-        },
-        {
-            key: "8",
-            title: "EndDate",
-            dataIndex: "endDate",
-            sorter: true,
-            sortOrder: sortFields.includes('endDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: () => handleSort('endDate'),
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <Select
-                        defaultValue="lte"
-                        style={{ width: 80, marginRight: 8 }}
-                        onChange={(value) => setFilterOperator(value)}
-                    >
-                        <Option value="lte">{'<='}</Option>
-                        <Option value="gte">{'>='}</Option>
-                    </Select>
-                    <Input
-                        placeholder="Filter"
-                        value={selectedKeys[0]}
-                        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                        onPressEnter={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button onClick={() => {
-                        setFilter('');
-                        clearFilters();
-                    }}>
-                        Reset
-                    </Button>
-                </div>
-            ),
-        },
-        {
-            key: "9",
-            title: "Salary",
-            dataIndex: "salary",
-            sorter: true,
-            sortOrder: sortFields.includes('salary') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: () => handleSort('salary'),
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <Select
-                        defaultValue="lte"
-                        style={{ width: 80, marginRight: 8 }}
-                        onChange={(value) => setFilterOperator(value)}
-                    >
-                        <Option value="lte">{'<='}</Option>
-                        <Option value="gte">{'>='}</Option>
-                    </Select>
-                    <Input
-                        placeholder="Filter"
-                        value={selectedKeys[0]}
-                        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                        onPressEnter={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                        style={{ width: 188, marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                            confirm();
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button onClick={() => {
-                        setFilter('');
-                        clearFilters();
-                    }}>
-                        Reset
-                    </Button>
-                </div>
-            ),
-        },
-        {
-            key: "10",
-            title: "Position",
-            dataIndex: "position",
-            filters: [
-                {text: 'Joe', value: 'Joe'},
-                {text: 'Jim', value: 'Jim'},
-            ],
-            sorter: true,
-            sortOrder: sortFields.includes('position') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: () => handleSort('position'),
-
-            onFilter: (value: string) => {
-                handleOnFilter(value);
-            },
-            render: (tag) => (
-                <Tag color={tag.length > 5 ? 'green' : 'green'} key={tag}>
-                    {tag.toUpperCase()}
-                </Tag>)
-        },
-        {
-            title: "Organization",
-            sorter: true,
-            sortOrder: sortFields.includes('Organization') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            onSort: () => handleSort('Organization'),
-            children: [
-                {
-                    key: "12",
-                    title: "id",
-                    dataIndex: ["Organization", "id"],
-                    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                        <div style={{ padding: 8 }}>
-                            <Select
-                                defaultValue="lte"
-                                style={{ width: 80, marginRight: 8 }}
-                                onChange={(value) => setFilterOperator(value)}
-                            >
-                                <Option value="lte">{'<='}</Option>
-                                <Option value="gte">{'>='}</Option>
-                            </Select>
-                            <Input
-                                placeholder="Filter"
-                                value={selectedKeys[0]}
-                                onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                                onPressEnter={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                                style={{ width: 188, marginBottom: 8, display: 'block' }}
-                            />
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                            >
-                                Filter
-                            </Button>
-                            <Button onClick={() => {
-                                setFilter('');
-                                clearFilters();
-                            }}>
-                                Reset
-                            </Button>
-                        </div>
-                    ),
-                },
-                {
-                    key: "13",
-                    dataIndex: ["Organization", "fullName"],
-                    title: "fullName",
-                    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                        <div style={{ padding: 8 }}>
-                            <Select
-                                defaultValue="lte"
-                                style={{ width: 80, marginRight: 8 }}
-                                onChange={(value) => setFilterOperator(value)}
-                            >
-                                <Option value="lte">{'<='}</Option>
-                                <Option value="gte">{'>='}</Option>
-                            </Select>
-                            <Input
-                                placeholder="Filter"
-                                value={selectedKeys[0]}
-                                onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                                onPressEnter={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                                style={{ width: 188, marginBottom: 8, display: 'block' }}
-                            />
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                            >
-                                Filter
-                            </Button>
-                            <Button onClick={() => {
-                                setFilter('');
-                                clearFilters();
-                            }}>
-                                Reset
-                            </Button>
-                        </div>
-                    ),
-                },
-                {
-                    key: "14",
-                    title: "annualTurnover",
-                    dataIndex: ["Organization", "annualTurnover"],
-                    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                        <div style={{ padding: 8 }}>
-                            <Select
-                                defaultValue="lte"
-                                style={{ width: 80, marginRight: 8 }}
-                                onChange={(value) => setFilterOperator(value)}
-                            >
-                                <Option value="lte">{'<='}</Option>
-                                <Option value="gte">{'>='}</Option>
-                            </Select>
-                            <Input
-                                placeholder="Filter"
-                                value={selectedKeys[0]}
-                                onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                                onPressEnter={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                                style={{ width: 188, marginBottom: 8, display: 'block' }}
-                            />
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    setFilter(`coordinates.y[lte]=${selectedKeys[0]}`);
-                                    confirm();
-                                }}
-                            >
-                                Filter
-                            </Button>
-                            <Button onClick={() => {
-                                setFilter('');
-                                clearFilters();
-                            }}>
-                                Reset
-                            </Button>
-                        </div>
-                    ),
+                    sorter: true,
+                    filterDropdown: createFilterDropdown("y")
                 }
             ]
-        }
-    ]
+        },
+                {
+                    key: "6",
+                    title: "CreationDate",
+                    dataIndex: "creationDate",
+                    sorter: true,
+                    sortOrder: sortFields.includes('creationDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
+                    filterDropdown: createFilterDropdown("creationDate")
+                },
+                {
+                    key: "7",
+                    title: "StartDate",
+                    dataIndex: "startDate",
+                    sorter: true,
+                    sortOrder: sortFields.includes('startDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
+                    filterDropdown: createFilterDropdown("startDate")
+                },
+                {
+                    key: "8",
+                    title: "EndDate",
+                    dataIndex: "endDate",
+                    sorter: true,
+                    sortOrder: sortFields.includes('endDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
+                    filterDropdown: createFilterDropdown("endDate")
+                },
+                {
+                    key: "9",
+                    title: "Salary",
+                    dataIndex: "salary",
+                    sorter: true,
+                    sortOrder: sortFields.includes('salary') ? (isSortAscending ? 'ascend' : 'descend') : null,
+                    filterDropdown: createFilterDropdown("salary")
+                },
+                {
+                    key: "10",
+                    title: "Position",
+                    dataIndex: "position",
+                    sorter: true,
+                    sortOrder: sortFields.includes('position') ? (isSortAscending ? 'ascend' : 'descend') : null,
+                    filterDropdown: createFilterDropdown("position"),
+                    render: (tag) => (
+                        <Tag color={tag.length > 5 ? 'green' : 'green'} key={tag}>
+                            {tag.toUpperCase()}
+                        </Tag>)
+                },
+                {
+                    title: "Organization",
+                    children: [
+                        {
+                            key: "12",
+                            title: "id",
+                            dataIndex: ["Organization", "id"],
+                            sorter: true,
+                            filterDropdown: createFilterDropdown("organization.id")
+                        },
+                        {
+                            key: "13",
+                            dataIndex: ["Organization", "fullName"],
+                            title: "fullName",
+                            sorter: true,
+                            filterDropdown: createFilterDropdown("organization.name")
+                        },
+                        {
+                            key: "14",
+                            title: "annualTurnover",
+                            sorter: true,
+                            dataIndex: ["Organization", "annualTurnover"],
+                            filterDropdown: createFilterDropdown("organization.annualTurnover")
+                        }
+                    ]
+                },
+            ]
+    const handleTableChange = (pagination, filters, sorter) => {
+        setPagination(pagination);
+        console.log('Various parameters', pagination, filters, sorter);
+    };
     return (
         <div>
-
             <Table
                 pagination={pagination}
-                // onChange={handleTableChange}
                 bordered={true}
                 loading={loading}
                 columns={columns}
                 dataSource={jsonData}
                 style={{marginTop: 2}}
-                onChange={(newPagination, filters, sorter) => {
-                    // if (sorter.field && sorter.order) {
-                    //     handleSort(sorter.field, sorter.order);
-                    // }
-                    setPagination(newPagination);
-                }}
+                onChange={handleTableChange}
             >
             </Table>
             <div className="container2">

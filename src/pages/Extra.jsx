@@ -199,7 +199,7 @@ export const Extra = () => {
                         >
                             <Select>
                                 <Option value="greater">Больше</Option>
-                                <Option value="lower">Меньше</Option>
+                                <Option value="equals">Равно</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item>
