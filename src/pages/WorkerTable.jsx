@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import xml2js, {parseString} from 'xml2js';
 import {Button, DatePicker, Form, Input, InputNumber, Modal, Select, Table} from 'antd';
+import WorkerService from "../API/WorkerService";
 
 const { RangePicker } = DatePicker;
 const {Option} = Select;
@@ -559,36 +560,45 @@ export const WorkerTable = () => {
 
     const onFinish1 = () => {
         form4.validateFields()
-            .then(values => {
-                console.log('Form values:', values);
+            .then(async values => {
+                console.log('created');
                 values.endDate = values.StartDateEndDate[1].$d.toISOString().split('T')[0];
                 values.creationDate = values.CreationDate.$d.toISOString();
-                values.startDate =  values.StartDateEndDate[0].$d.toISOString().replace('T', ' ').replace('Z', '');
+                values.startDate = values.StartDateEndDate[0].$d.toISOString().replace('T', ' ').replace('Z', '');
                 delete values.StartDateEndDate
-                console.log('Form values:', values);
                 values.Organization = {
                     id: values.organization_id,
                     fullName: values.organization_fullName,
                     annualTurnover: values.organization_annualTurnover,
                 };
-                delete values.organization_annualTurnover;delete values.organization_fullName;delete values.CreationDate;
+                delete values.organization_annualTurnover;
+                delete values.organization_fullName;
+                delete values.CreationDate;
                 delete values.organization_id;
                 const coord = {
                     x: values.CoordinateX,
                     y: values.CoordinateY,
                 };
-                delete values.CoordinateX;delete values.CoordinateY;
+                delete values.CoordinateX;
+                delete values.CoordinateY;
                 values.Coordinates = coord;
-                const builder = new xml2js.Builder({rootName :'CreateWorkerRequest'});
+                const builder = new xml2js.Builder({rootName: 'CreateWorkerRequest'});
                 const xmlData = builder.buildObject(values);
                 console.log(xmlData)
+                const response =await axios.post(`https://localhost:9000/company/workers`, xmlData,{
+                    headers: {
+                        'Accept': 'application/xml',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                }).catch((error) => {
+                    console.log(error);
+                })
             }).catch(error => {
             console.error('Validation error:', error);
         });
     };
     const onFinish3 = (values) => {
-        console.log('Received values of form: ', values);
-
+        console.log('red ');
         let id = values.id
         delete values.id;
         const organization = {

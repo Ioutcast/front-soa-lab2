@@ -13,4 +13,5 @@ export default class WorkerService{
     static async postMove(workerId, idFrom, idTo){
         return await axios.get(`https://localhost:9090/move/${workerId}/${idFrom}/${idTo}`)
     }
+
 }
