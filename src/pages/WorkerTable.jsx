@@ -1,13 +1,24 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {parseString} from 'xml2js';
-import {Button, Table, Tag, Form, Input,Select} from "antd"
-
-const { Option } = Select;
+import xml2js, {parseString} from 'xml2js';
+import {
+    Button, Table, Tag, Modal,
+    DatePicker,
+    Form,
+    Input,
+    InputNumber,
+    Select
+} from 'antd';
+const { RangePicker } = DatePicker;
+const {Option} = Select;
 const {Item} = Form;
+
 export const WorkerTable = () => {
 
-    const [form] = Form.useForm();
+    const [form4] = Form.useForm();
+    const [form1] = Form.useForm();
+    const [form2] = Form.useForm();
+    const [form3] = Form.useForm();
     const [loading, setLoading] = useState(false)
     const [jsonData, setJsonData] = useState(null);
     const [isSortAscending, setIsSortAscending] = useState(null);
@@ -18,21 +29,24 @@ export const WorkerTable = () => {
         total: 0,
     });
     const [filterState, setFilterState] = useState({});
+
     const loadData = async (pageCur) => {
         try {
             const queryParams = new URLSearchParams();
             for (const columnKey in filterState) {
                 const filter = filterState[columnKey];
                 if (filter.operator && filter.value) {
-                    queryParams.append("filter",`${columnKey}[${filter.operator}]=${filter.value}`);
+                    queryParams.append("filter", `${columnKey}[${filter.operator}]=${filter.value}`);
                 }
             }
             // sortFields.forEach((field, index) => {
             //     queryParams.append(`sortElement`, field);
             // });
+
+            //todo
             queryParams.append(`sortElement`, "id");
             queryParams.append('pageSize', String(pagination.pageSize));
-            queryParams.append('page', String(parseInt(pageCur)-1));
+            queryParams.append('page', String(parseInt(pageCur) - 1));
             const queryString = queryParams.toString();
             console.log(queryString)
             const url = `https://localhost:9000/company/workers?${queryString}`;
@@ -47,15 +61,16 @@ export const WorkerTable = () => {
                     } else {
                         const content = result.SortedWorkersResponse.content[0].WorkerFullInfo;
                         const pageData = result.SortedWorkersResponse;
-                        console.log(pageData.pagenumber[0])
                         const newPagination = {
-                            current: parseInt(pageData.pagenumber[0])+1,
-                            pageSize: parseInt(pageData.totalElements[0]),
+                            current: parseInt(pageData.pagenumber[0]) + 1,
+                            pageSize: parseInt(pageData.numberOfElements[0]),
                             total: parseInt(pageData.totalElements[0]),
                         };
                         setPagination(newPagination);
+                        let index = 0;
                         const transformedDataArray = content.map((contentItem) => {
                             const transformedObj = {};
+                            transformedObj.key = index++;
                             transformedObj.id = contentItem.id[0];
                             transformedObj.name = contentItem.name[0];
                             transformedObj.Coordinate = {
@@ -84,6 +99,7 @@ export const WorkerTable = () => {
             setLoading(false)
         }
     };
+    const [componentDisabled, setComponentDisabled] = useState(true);
 
     useEffect(() => {
         setLoading(true)
@@ -91,27 +107,26 @@ export const WorkerTable = () => {
             .catch((err) => {
                 console.log(err);
             });
-    }, [pagination.current,filterState])
-    const handleAdd = () =>{
-        console.log("a")
-    }
-    const handleSort = (field) => {
-        console.log(field)
-        const newSortFields = [...sortFields];
-        const index = newSortFields.indexOf(field);
-        if (index !== -1) {
-            newSortFields.splice(index, 1);
-        } else {
-            newSortFields.push(field);
-        }
-        setSortFields(newSortFields);
-        setIsSortAscending(!isSortAscending);
-        // setPagination({ ...pagination, current: 1 }); // Сбросите текущую страницу на 1 при изменении сортировки
-    };
-    const createFilterDropdown = (columnKey) => ({ confirm, clearFilters }) => (
-        <div style={{ padding: 8 }}>
+    }, [pagination.current, filterState])
+    const [editingRow, setEditingRow] = useState(null);
+
+    // const handleSort = (field) => {
+    //     console.log(field)
+    //     const newSortFields = [...sortFields];
+    //     const index = newSortFields.indexOf(field);
+    //     if (index !== -1) {
+    //         newSortFields.splice(index, 1);
+    //     } else {
+    //         newSortFields.push(field);
+    //     }
+    //     setSortFields(newSortFields);
+    //     setIsSortAscending(!isSortAscending);
+    //     // setPagination({ ...pagination, current: 1 }); // Сбросите текущую страницу на 1 при изменении сортировки
+    // };
+    const createFilterDropdown = (columnKey) => ({confirm, clearFilters}) => (
+        <div style={{padding: 8}}>
             <Select
-                style={{ width: 80, marginRight: 8 }}
+                style={{width: 80, marginRight: 8}}
                 onChange={(value) => {
                     setFilterState({
                         ...filterState,
@@ -141,7 +156,7 @@ export const WorkerTable = () => {
                         },
                     });
                 }}
-                style={{ width: 188, marginBottom: 8, display: 'block' }}
+                style={{width: 188, marginBottom: 8, display: 'block'}}
             />
             <Button
                 type="primary"
@@ -167,7 +182,6 @@ export const WorkerTable = () => {
     );
     const columns = [
         {
-            key: "1",
             title: "ID",
             dataIndex: "id",
             sorter: true,
@@ -183,14 +197,52 @@ export const WorkerTable = () => {
             //     setSortFields(newSortFields);
             // },
             filterDropdown: createFilterDropdown("id"),
+            render: (text, record) => {
+                if (editingRow === record.key) {
+                    return (
+                        <Form.Item
+                            name="id"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter your name",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    );
+                } else {
+                    return <p>{text}</p>;
+                }
+            },
         },
         {
-            key: "2",
+
             title: "Name",
             dataIndex: "name",
             sorter: true,
             sortOrder: sortFields.includes('name') ? (isSortAscending ? 'ascend' : 'descend') : null,
-            filterDropdown: createFilterDropdown("name")
+            filterDropdown: createFilterDropdown("name"),
+            render: (text, record) => {
+                if (editingRow === record.key) {
+                    return (
+                        <Form.Item
+                            name="name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter your name",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    );
+                } else {
+                    return <p>{text}</p>;
+                }
+            },
         },
         {
             title: "Coordinate",
@@ -198,96 +250,358 @@ export const WorkerTable = () => {
                 {
                     title: "X",
                     dataIndex: ["Coordinate", "x"],
-                    key: "5",
                     sorter: true,
-                    filterDropdown: createFilterDropdown("x")
+                    filterDropdown: createFilterDropdown("x"),
+                    render: (text, record) => {
+                        if (editingRow === record.key) {
+                            return (
+                                <Form.Item
+                                    name="coordinate_x"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Please enter x",
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            );
+                        } else {
+                            return <p>{text}</p>;
+                        }
+                    },
                 },
                 {
                     title: "Y",
                     dataIndex: ["Coordinate", "y"],
-                    key: "55",
                     sorter: true,
-                    filterDropdown: createFilterDropdown("y")
+                    filterDropdown: createFilterDropdown("y"),
+                    render: (text, record) => {
+                        if (editingRow === record.key) {
+                            return (
+                                <Form.Item
+                                    name="coordinate_y"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Please enter y",
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            );
+                        } else {
+                            return <p>{text}</p>;
+                        }
+                    },
                 }
             ]
         },
+        {
+            title: "CreationDate",
+            dataIndex: "creationDate",
+            sorter: true,
+            sortOrder: sortFields.includes('creationDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
+            filterDropdown: createFilterDropdown("creationDate"),
+            render: (text, record) => {
+                if (editingRow === record.key) {
+                    return (
+                        <Form.Item
+                            name="creationDate"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter your creationDate",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    );
+                } else {
+                    return <p>{text}</p>;
+                }
+            },
+        },
+        {
+            title: "StartDate",
+            dataIndex: "startDate",
+            sorter: true,
+            sortOrder: sortFields.includes('startDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
+            filterDropdown: createFilterDropdown("startDate"),
+            render: (text, record) => {
+                if (editingRow === record.key) {
+                    return (
+                        <Form.Item
+                            name="startDate"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter your startDate",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    );
+                } else {
+                    return <p>{text}</p>;
+                }
+            },
+        },
+        {
+            title: "EndDate",
+            dataIndex: "endDate",
+            sorter: true,
+            sortOrder: sortFields.includes('endDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
+            filterDropdown: createFilterDropdown("endDate"),
+            render: (text, record) => {
+                if (editingRow === record.key) {
+                    return (
+                        <Form.Item
+                            name="endDate"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter endDate",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    );
+                } else {
+                    return <p>{text}</p>;
+                }
+            },
+        },
+        {
+            title: "Salary",
+            dataIndex: "salary",
+            sorter: true,
+            sortOrder: sortFields.includes('salary') ? (isSortAscending ? 'ascend' : 'descend') : null,
+            filterDropdown: createFilterDropdown("salary"),
+            render: (text, record) => {
+                if (editingRow === record.key) {
+                    return (
+                        <Form.Item
+                            name="salary"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter salary",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    );
+                } else {
+                    return <p>{text}</p>;
+                }
+            },
+        },
+        {
+            title: "Position",
+            dataIndex: "position",
+            sorter: true,
+            sortOrder: sortFields.includes('position') ? (isSortAscending ? 'ascend' : 'descend') : null,
+            filterDropdown: createFilterDropdown("position"),
+            render: (text, record) => {
+                if (editingRow === record.key) {
+                    return (
+                        <Form.Item
+                            name="position"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter position",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    );
+                } else {
+                    return <p>{text}</p>;
+                }
+            },
+        },
+        {
+            title: "Organization",
+            children: [
                 {
-                    key: "6",
-                    title: "CreationDate",
-                    dataIndex: "creationDate",
+                    title: "id",
+                    dataIndex: ["Organization", "id"],
                     sorter: true,
-                    sortOrder: sortFields.includes('creationDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
-                    filterDropdown: createFilterDropdown("creationDate")
-                },
-                {
-                    key: "7",
-                    title: "StartDate",
-                    dataIndex: "startDate",
-                    sorter: true,
-                    sortOrder: sortFields.includes('startDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
-                    filterDropdown: createFilterDropdown("startDate")
-                },
-                {
-                    key: "8",
-                    title: "EndDate",
-                    dataIndex: "endDate",
-                    sorter: true,
-                    sortOrder: sortFields.includes('endDate') ? (isSortAscending ? 'ascend' : 'descend') : null,
-                    filterDropdown: createFilterDropdown("endDate")
-                },
-                {
-                    key: "9",
-                    title: "Salary",
-                    dataIndex: "salary",
-                    sorter: true,
-                    sortOrder: sortFields.includes('salary') ? (isSortAscending ? 'ascend' : 'descend') : null,
-                    filterDropdown: createFilterDropdown("salary")
-                },
-                {
-                    key: "10",
-                    title: "Position",
-                    dataIndex: "position",
-                    sorter: true,
-                    sortOrder: sortFields.includes('position') ? (isSortAscending ? 'ascend' : 'descend') : null,
-                    filterDropdown: createFilterDropdown("position"),
-                    render: (tag) => (
-                        <Tag color={tag.length > 5 ? 'green' : 'green'} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>)
-                },
-                {
-                    title: "Organization",
-                    children: [
-                        {
-                            key: "12",
-                            title: "id",
-                            dataIndex: ["Organization", "id"],
-                            sorter: true,
-                            filterDropdown: createFilterDropdown("organization.id")
-                        },
-                        {
-                            key: "13",
-                            dataIndex: ["Organization", "fullName"],
-                            title: "fullName",
-                            sorter: true,
-                            filterDropdown: createFilterDropdown("organization.name")
-                        },
-                        {
-                            key: "14",
-                            title: "annualTurnover",
-                            sorter: true,
-                            dataIndex: ["Organization", "annualTurnover"],
-                            filterDropdown: createFilterDropdown("organization.annualTurnover")
+                    filterDropdown: createFilterDropdown("organization.id"),
+                    render: (text, record) => {
+                        if (editingRow === record.key) {
+                            return (
+                                <Form.Item
+                                    name="organization_id"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Please enter organization.id",
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            );
+                        } else {
+                            return <p>{text}</p>;
                         }
-                    ]
+                    },
                 },
+                {
+                    dataIndex: ["Organization", "fullName"],
+                    title: "fullName",
+                    sorter: true,
+                    filterDropdown: createFilterDropdown("organization.name"),
+                    render: (text, record) => {
+                        if (editingRow === record.key) {
+                            return (
+                                <Form.Item
+                                    name="organization_fullName"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Please enter organization.name",
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            );
+                        } else {
+                            return <p>{text}</p>;
+                        }
+                    },
+                },
+                {
+                    title: "annualTurnover",
+                    sorter: true,
+                    dataIndex: ["Organization", "annualTurnover"],
+                    filterDropdown: createFilterDropdown("organization.annualTurnover"),
+                    render: (text, record) => {
+                        if (editingRow === record.key) {
+                            return (
+                                <Form.Item
+                                    name="organization_annualTurnover"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Please enter organization.annualTurnover",
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            );
+                        } else {
+                            return <p>{text}</p>;
+                        }
+                    },
+                }
             ]
+        },
+        {
+            title: "Actions",
+            render: (_, record) => {
+                return (
+                    <>
+                        <Button
+                            type="link"
+                            onClick={() => {
+                                setEditingRow(record.key);
+                                form3.setFieldsValue({
+                                    id:record.id,
+                                    name: record.name,
+                                    coordinate_x: record.Coordinate.x,
+                                    coordinate_y: record.Coordinate.y,
+                                    creationDate:record.creationDate,
+                                    endDate:record.endDate,
+                                    startDate:record.startDate,
+                                    salary:record.salary,
+                                    position:record.position,
+                                    organization_id:record.Organization.id,
+                                    organization_fullName:record.Organization.fullName,
+                                    organization_annualTurnover:record.Organization.annualTurnover,
+                                });
+                            }}
+                        >
+                            Edit
+                        </Button>
+                        <Button type="link" htmlType="submit">
+                            Save
+                        </Button>
+                    </>
+                );
+            },
+        },
+    ]
     const handleTableChange = (pagination, filters, sorter) => {
         setPagination(pagination);
-        console.log('Various parameters', pagination, filters, sorter);
+    };
+    const [open, setOpen] = useState(false);
+    const showModal = () => {
+        setOpen(true);
+        setComponentDisabled(false)
+    };
+    const handleCancel = () => {
+        setOpen(false);
+    };
+    const handleOk = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            setOpen(false);
+        }, 3000);
+    };
+
+    const onFinish1 = (values: any) => {
+        form4.validateFields()
+            .then(values => {
+                console.log('Form values:', values);
+                const builder = new xml2js.Builder({rootName :'WorkerInfo'});
+                const xmlData = builder.buildObject(values);
+                console.log(xmlData)
+            }).catch(error => {
+            console.error('Validation error:', error);
+        });
+    };
+    const onFinish3 = (values) => {
+        console.log('Received values of form: ', values);
+
+        let id = values.id
+        delete values.id;
+        const organization = {
+            id: values.organization_id,
+            fullName: values.organization_fullName,
+            annualTurnover: values.organization_annualTurnover,
+        };
+        delete values.organization_annualTurnover;delete values.organization_fullName;delete values.organization_id;
+        values.Organization = organization;
+        const coord = {
+            x: values.coordinate_x,
+            y: values.coordinate_y,
+        };
+        delete values.coordinate_x;delete values.coordinate_y;
+        values.Coordinate = coord;
+
+        const builder = new xml2js.Builder({rootName :'WorkerInfo'});
+        const xmlData = builder.buildObject(values);
+        console.log(xmlData)
+        // setDataSource(updatedDataSource);
+        setEditingRow(null);
     };
     return (
         <div>
+            <Form form={form3} onFinish={onFinish3}>
             <Table
                 pagination={pagination}
                 bordered={true}
@@ -298,33 +612,13 @@ export const WorkerTable = () => {
                 onChange={handleTableChange}
             >
             </Table>
+            </Form>
             <div className="container2">
                 <div className="form-worker-changer">
-                    <Button className="add-btn" onClick={handleAdd} type="primary">Создать сотрудника</Button>
+                    <Button className="add-btn" onClick={showModal} type="primary">Создать сотрудника</Button>
                 </div>
                 <div className="form-worker-changer">
-                    <Form form={form}>
-                        <Item
-                            name="employeeId"
-                            label="ID сотрудника"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Введите ID сотрудника',
-                                },
-                            ]}
-                        >
-                            <Input/>
-                        </Item>
-                        <Item style={{textAlign: "center"}}>
-                            <Button type="dashed" htmlType="submit" loading={loading}>
-                                Обновить сотрудника
-                            </Button>
-                        </Item>
-                    </Form>
-                </div>
-                <div className="form-worker-changer">
-                    <Form form={form}>
+                    <Form form={form1}>
                         <Item
                             name="employeeId"
                             label="ID сотрудника"
@@ -345,7 +639,7 @@ export const WorkerTable = () => {
                     </Form>
                 </div>
                 <div className="form-worker-changer">
-                    <Form form={form}>
+                    <Form form={form2}>
                         <Item
                             name="employeeId"
                             label="ID сотрудника"
@@ -366,6 +660,57 @@ export const WorkerTable = () => {
                     </Form>
                 </div>
             </div>
+            <Modal
+                open={open}
+                title="Параметры сотрудника"
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                        Return
+                    </Button>,
+                    <Button key="submit" type="primary" loading={loading} onClick={onFinish1
+                    }>
+                        Submit
+                    </Button>,
+                ]}
+            >
+                <Form
+                    form={form4}
+                    onFinish={onFinish1}
+                    labelCol={{span: 4}}
+                    wrapperCol={{span: 14}}
+                    layout="horizontal"
+                    disabled={componentDisabled}
+                    style={{maxWidth: 600}}
+                >
+                    <Form.Item name="name" rules={[{required: true}]} label="Name">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item  rules={[{required: true}]} label="Coordinate">
+                        <Input name="CoordinateX" rules={[{required: true}]} style={{marginBottom: 10}} placeholder="x"/>
+                        <Input name="CoordinateY" rules={[{required: true}]} placeholder="y"/>
+                    </Form.Item>
+                    <Form.Item name="CreationDate" rules={[{required: true}]} label="CreationDate">
+                        <DatePicker />
+                    </Form.Item>
+                    <Form.Item name="StartDateEndDate" rules={[{required: true}]} label="Start/End">
+                        <RangePicker showTime/>
+                    </Form.Item>
+                    <Form.Item name="Salary" rules={[{required: true}]} label="Salary">
+                        <InputNumber/>
+                    </Form.Item>
+                    <Form.Item name="Position" rules={[{required: true,}]} label="Position">
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item name="Organization.fullname"  label="fullname">
+                        <Input rules={[{required: true}]} placeholder="fullname"/>
+                    </Form.Item>
+                    <Form.Item name="Organization.annualTurnover"  label="annualTurnover">
+                        <Input rules={[{required: true}]} placeholder="annualTurnover"/>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     )
 }
