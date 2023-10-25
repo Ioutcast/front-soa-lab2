@@ -54,13 +54,13 @@ export const WorkerTable = () => {
       //     queryParams.append(`sortElements`, field);
       // });
 
-      //todo
-      queryParams.append("isUpper", "true");
-      queryParams.append(`sortElements`, "id");
+      // //todo
+      // queryParams.append("isUpper", "true");
+      // queryParams.append(`sortElements`, "id");
       queryParams.append("pageSize", String(pagination.pageSize));
       queryParams.append("page", String(parseInt(pageCur) - 1));
       const queryString = queryParams.toString();
-      console.log(queryString);
+
       const url = `https://localhost:9000/company/workers?${queryString}`;
       const response = await axios.get(url).catch((err) => {
         console.log(err);
@@ -75,36 +75,45 @@ export const WorkerTable = () => {
               const pageData = result.SortedWorkersResponse;
               const newPagination = {
                 current: parseInt(pageData.pagenumber[0]) + 1,
-                pageSize: parseInt(pageData.numberOfElements[0]),
+                pageSize: 10,
                 total: parseInt(pageData.totalElements[0]),
               };
               setPagination(newPagination);
               let index = 0;
-              const transformedDataArray = content.map((contentItem) => {
-                const transformedObj = {};
-                transformedObj.key = index++;
-                transformedObj.id = contentItem.id[0];
-                transformedObj.name = contentItem.name[0];
-                transformedObj.Coordinate = {
-                  x: contentItem.Coordinates[0].x[0],
-                  y: parseFloat(contentItem.Coordinates[0].y[0]),
-                };
-                transformedObj.creationDate = contentItem.creationDate[0];
-                transformedObj.salary = parseFloat(contentItem.salary[0]);
-                transformedObj.startDate = contentItem.startDate[0];
-                transformedObj.endDate = contentItem.endDate[0];
-                transformedObj.position = contentItem.position[0];
-                transformedObj.Organization = {
-                  id: contentItem.Organization[0].id[0],
-                  fullName: contentItem.Organization[0].fullName[0],
-                  annualTurnover: parseFloat(
-                    contentItem.Organization[0].annualTurnover[0]
-                  ),
-                };
-                return transformedObj;
-              });
-              setJsonData(transformedDataArray);
-              // console.log(transformedDataArray)
+              try {
+                const transformedDataArray = content.map((contentItem) => {
+                  const transformedObj = {};
+                  transformedObj.key = index++;
+                  transformedObj.id = contentItem.id[0];
+                  transformedObj.name = contentItem.name[0];
+                  transformedObj.Coordinate = {
+                    x: contentItem.Coordinates[0].x[0],
+                    y: parseFloat(contentItem.Coordinates[0].y[0]),
+                  };
+                  transformedObj.creationDate = contentItem.creationDate[0];
+                  transformedObj.salary = parseFloat(contentItem.salary[0]);
+                  transformedObj.startDate = contentItem.startDate[0];
+                  transformedObj.endDate = contentItem.endDate[0];
+                  transformedObj.position = contentItem.position[0];
+                  transformedObj.Organization = {
+                    id: contentItem.Organization[0].id[0],
+                    fullName: contentItem.Organization[0].fullName[0],
+                    annualTurnover: parseFloat(
+                      contentItem.Organization[0].annualTurnover[0]
+                    ),
+                  };
+                  return transformedObj;
+                });
+                setJsonData(transformedDataArray);
+                // console.log(transformedDataArray)
+              } catch (error) {
+                setPagination({
+                  current: 1,
+                  pageSize: 10,
+                  total: 0,
+                });
+                setJsonData([]);
+              }
             }
           })
         : setJsonData([]);
@@ -193,6 +202,11 @@ export const WorkerTable = () => {
                 },
               }));
               clearFilters();
+              setPagination({
+                current: 1,
+                pageSize: 10,
+                total: 0,
+              });
             }}
           >
             Reset
@@ -588,6 +602,7 @@ export const WorkerTable = () => {
     },
   ];
   const handleTableChange = (pagination, filters, sorter) => {
+    // console.log(pagination);
     setPagination(pagination);
   };
   const [open, setOpen] = useState(false);
@@ -610,7 +625,6 @@ export const WorkerTable = () => {
     form4
       .validateFields()
       .then(async (values) => {
-        console.log("created");
         values.endDate = values.StartDateEndDate[1].$d
           .toISOString()
           .split("T")[0];
@@ -635,7 +649,6 @@ export const WorkerTable = () => {
         values.Coordinates = coord;
         const builder = new xml2js.Builder({ rootName: "CreateWorkerRequest" });
         const xmlData = builder.buildObject(values);
-        console.log(xmlData);
         const response = await axios
           .post(`https://localhost:9000/company/workers`, xmlData, {
             headers: {
@@ -650,8 +663,7 @@ export const WorkerTable = () => {
         console.error("Validation error:", error);
       });
   };
-  const onFinish3 = (values) => {
-    console.log("red ");
+  const onFinish3 = async (values) => {
     let id = values.id;
     delete values.id;
     const organization = {
@@ -670,10 +682,19 @@ export const WorkerTable = () => {
     delete values.coordinate_x;
     delete values.coordinate_y;
     values.Coordinates = coord;
-
+    values.creationDate = values.creationDate + "Z";
     const builder = new xml2js.Builder({ rootName: "WorkerInfo" });
     const xmlData = builder.buildObject(values);
-    console.log(xmlData);
+    const response = await axios
+      .put(`https://localhost:9000/company/workers/${id}`, xmlData, {
+        headers: {
+          "Content-Type": "application/xml",
+        },
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     // setDataSource(updatedDataSource);
     setEditingRow(null);
   };
