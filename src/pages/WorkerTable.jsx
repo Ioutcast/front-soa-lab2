@@ -573,7 +573,9 @@ export const WorkerTable = () => {
             <Button
               type="link"
               onClick={() => {
-                setEditingRow(record.key);
+                editingRow == null
+                  ? setEditingRow(record.key)
+                  : setEditingRow(null);
                 form3.setFieldsValue({
                   id: record.id,
                   name: record.name,
@@ -591,11 +593,19 @@ export const WorkerTable = () => {
                 });
               }}
             >
-              Edit
+              {editingRow == null ? (
+                <p>Edit</p>
+              ) : (
+                <p style={{ color: "red" }}>Cancel</p>
+              )}
             </Button>
-            <Button type="link" htmlType="submit">
-              Save
-            </Button>
+            {editingRow != null ? (
+              <Button type="link" htmlType="submit">
+                Save
+              </Button>
+            ) : (
+              <></>
+            )}
           </>
         );
       },
