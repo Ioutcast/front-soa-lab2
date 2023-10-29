@@ -695,7 +695,7 @@ export const WorkerTable = () => {
         console.log(error);
       });
 
-    // setDataSource(updatedDataSource);
+    loadData(1);
     setEditingRow(null);
   };
   return (
