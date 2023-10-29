@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import xml2js, { parseString } from "xml2js";
+import useSound from "use-sound";
 import {
   Button,
   DatePicker,
@@ -11,13 +12,15 @@ import {
   Select,
   Table,
 } from "antd";
+import welcome from "../mp3f/osu.mp3";
 import WorkerService from "../API/WorkerService";
-
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { Item } = Form;
 
 export const WorkerTable = () => {
+  const [firstPlay, setFirstPlay] = useState(true);
+  const [play] = useSound(welcome);
   const [form4] = Form.useForm();
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
@@ -124,12 +127,17 @@ export const WorkerTable = () => {
     }
   };
   const [componentDisabled, setComponentDisabled] = useState(true);
-
+  const handlePlay = () => {
+    setFirstPlay(true);
+    play();
+    console.log(play);
+  };
   useEffect(() => {
     setLoading(true);
     loadData(pagination.current).catch((err) => {
       console.log(err);
     });
+    if (firstPlay == true) handlePlay();
   }, [pagination.current, filterState]);
   const [editingRow, setEditingRow] = useState(null);
 
@@ -717,7 +725,7 @@ export const WorkerTable = () => {
           loading={loading}
           columns={columns}
           dataSource={jsonData}
-          style={{ marginTop: 2 }}
+          style={{ marginTop: 2, textAlign: "center" }}
           onChange={handleTableChange}
         ></Table>
       </Form>
