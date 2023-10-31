@@ -716,6 +716,7 @@ export const WorkerTable = () => {
     loadData(1);
     setEditingRow(null);
   };
+
   return (
     <div>
       <div className="falter-nav">

@@ -102,7 +102,7 @@ main {
 }
 .falter-intro {
   position: absolute;
-  top: 60%;
+  top: 55%;
   left: 50%;
   text-align: center;
   transform: translate(-50%, -50%);
@@ -223,7 +223,12 @@ p {
     width: 150px;
   }
 }
+
 .pulsate {
   animation: myAnimation 2s infinite;
   animation-delay: 5s;
+}
+
+.falter-intro .top-circle {
+  transition: transform 0.3s ease;
 }
