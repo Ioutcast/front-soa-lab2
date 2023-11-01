@@ -156,8 +156,11 @@ p {
   color: #fff;
   -webkit-user-select: none;
 }
-
+.ant-table-column-title {
+  color: #000;
+}
 .falter-intro .top-circle .circle {
+  color: #fff;
   width: 50px;
   height: 50px;
   border-radius: 50px;
@@ -167,7 +170,7 @@ p {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-a,
+/* a,
 div,
 p {
   font-size: 25px;
@@ -176,7 +179,7 @@ p {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-}
+} */
 .falter-intro .connecting-line {
   height: 160px;
   width: 1px;
