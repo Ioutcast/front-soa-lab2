@@ -6,13 +6,15 @@ export const WelcomeP = ({ updateData }) => {
 
   const smallDotsRefs = Array.from({ length: 33 }, () => createRef());
   const downDotsRefs = Array.from({ length: 36 }, () => createRef());
+  const [mouseDown, setMouseDown] = useState(0);
   const [isPressed, setIsPressed] = useState(false);
   const [transformValue, setTransformValue] = useState(
     "matrix(1, 0, 0, 1, 0, 0)"
   );
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseDown = () => {
+  const handleMouseDown = (event) => {
+    setMouseDown(event.clientY);
     setIsPressed(true);
     setTransformValue("matrix(0.5, 0, 0, 0.5, 0, 0)");
   };
@@ -39,19 +41,18 @@ export const WelcomeP = ({ updateData }) => {
     }
   };
   const handleMouseMove = (event) => {
-    console.log("handleMouseMove isPressed ", isPressed);
     if (isPressed) {
       requestAnimationFrame(() => {
-        console.log(event.clientY);
-        let newY = event.clientY - 450;
+        let newY = event.clientY - mouseDown;
         if (newY < 0) newY = 0;
         setTransformValue(`matrix(0.5, 0, 0, 0.5, 0, ${newY})`);
         if (newY > 180) {
           updateData(true);
-          navigate("/hr");
+          // navigate("/hr");
           setTransformValue(`matrix(1, 0, 0, 1, 0, 0)`);
           setIsPressed(false);
           setIsHovered(false);
+          setMouseDown(0);
         }
       });
     }

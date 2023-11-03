@@ -130,7 +130,6 @@ export const WorkerTable = () => {
   const handlePlay = () => {
     setFirstPlay(true);
     play();
-    console.log(play);
   };
   useEffect(() => {
     setLoading(true);
