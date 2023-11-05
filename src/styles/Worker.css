@@ -1,0 +1,157 @@
+.worker {
+  --cl-1: 63, 85%, 89%;
+  --cl-2: 335, 34%, 61%;
+  --cl-3: 334.55deg, 33.33%, 61.18%;
+  --cl-4: 334.55deg, 100%, 91.64%;
+  --hue: 232;
+  --saturation: 15%;
+  --color-start: 6%;
+  --color-step: 4%;
+  --color-base: var(--hue), var(--saturation);
+  --color-2: var(--color-base), calc(var(--color-start) + var(--color-step) * 3);
+  --colour-1: 130, calc(var(--saturation) - 5%), calc(21% + 20%);
+  --colour-2: 130, calc(var(--saturation) - 5%), calc(25% + 20%);
+  --test-1: 130, calc(var(--saturation) - 5%), calc(50% + 20%);
+  --test-2: 130, calc(var(--saturation) - 5%), calc(57% + 20%);
+  --pad-1: 0.3em 0.8em;
+  --gap-1: 0.5em;
+  --brs-1: 0.4em;
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+}
+.name__id {
+  display: flex;
+  align-items: center;
+}
+.worker__inner {
+  padding: 15px;
+  background-color: hsl(var(--color-2));
+  align-items: center;
+  text-align: center;
+  border-radius: var(--brs-1);
+}
+.position__inner {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: var(--pad-1);
+  color: hsl(var(--test-1));
+  background: hsl(var(--colour-1));
+  border-radius: var(--brs-1);
+  font-size: calc(7em / 10);
+  box-shadow: 0 0 0.5em hsl(var(--colour-1), 0.4),
+    0 0 2em hsl(var(--colour-1), 0.4);
+}
+[class^="icon-"],
+[class*=" icon-"] {
+  font-family: "icomoon" !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "";
+}
+.icon-check:before {
+  content: "✔";
+}
+.name__id {
+  /* filter: drop-shadow(0 0.1em 0.5em hsl(var(--cl-1), 0.6)); */
+  color: hsl(var(--cl-1));
+}
+
+.name__id span {
+  opacity: 0.6;
+  width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.position_w_name {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 10px;
+}
+.salary span {
+  width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.line-horizontal {
+  --colour-1: var(--color-3);
+  background: hsl(var(--colour-1));
+  height: 2px;
+  width: 100%;
+}
+.date {
+  display: flex;
+  justify-content: space-between;
+}
+.start__date,
+.end__date {
+  display: flex;
+  flex-direction: column;
+}
+.organization {
+  display: flex;
+  justify-content: flex-start;
+  gap: var(--gap-1);
+  padding: 5px;
+}
+.organization__annualTurnover {
+  margin-left: auto;
+}
+.worker__id {
+  filter: drop-shadow(0 0.1em 0.5em hsl(var(--cl-1), 0.6));
+  color: hsl(var(--cl-1));
+}
+.date {
+  position: inherit;
+}
+.date-new:after {
+  background: hsl(var(--ascend-1));
+  border-radius: 1em;
+  bottom: 0px;
+  box-shadow: 0 0 1em;
+  content: "";
+  height: 1px;
+  left: 0;
+  position: relative;
+  right: -0.4em;
+  transform: translateY(100%);
+}
+.salary {
+  display: flex;
+  justify-content: space-around;
+}
+.cont {
+  position: relative;
+  width: 1350px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-wrap: wrap;
+}
+.organization__id,
+.organization__name {
+  display: flex;
+}
+.coordinate {
+  width: 180px;
+  display: flex;
+  gap: 5px;
+}
+.coordinate__x,
+.coordinate__y {
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

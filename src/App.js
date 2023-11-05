@@ -7,31 +7,28 @@ import { Extra } from "./pages/Extra";
 import usePreventZoom from "./utils/usePreventZoom";
 import React, { useState } from "react";
 import { WelcomeP } from "./pages/WelcomeP";
-
-// function Greeting(props) {
-//   const isLoggedIn = props.isLoggedIn;
-//   if (isLoggedIn) {
-//     return <WelcomeP />;
-//   }
-//   return <WorkerTable />;
-// }
+import AwasomeTable from "./pages/AwasomeTable";
+import Menu from "./pages/Menu";
 
 function App() {
   const [firstTime, setFirstTime] = useState(false);
   const updateData = (value) => {
     setFirstTime(value);
   };
-  usePreventZoom();
-  return firstTime ? (
-    <SideBar>
-      <Routes>
-        <Route path="/" element={<WorkerTable />} />
-        <Route path="/extra" element={<Extra />} />
-        <Route path="/hr" element={<Hr />} />
-      </Routes>
-    </SideBar>
-  ) : (
-    <WelcomeP updateData={updateData} />
+  // usePreventZoom();
+  return (
+    <>
+      <Menu></Menu>
+      {firstTime ? (
+        <Routes>
+          <Route path="/" element={<AwasomeTable />} />
+          <Route path="/extra" element={<Extra />} />
+          <Route path="/hr" element={<Hr />} />
+        </Routes>
+      ) : (
+        <WelcomeP updateData={updateData} />
+      )}
+    </>
   );
 }
 export default App;
