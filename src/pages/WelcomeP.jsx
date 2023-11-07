@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState, createRef } from "react";
 import { useNavigate } from "react-router-dom";
-
+import welcome from "../mp3f/osu.mp3";
+import useSound from "use-sound";
 export const WelcomeP = ({ updateData }) => {
+  const [play] = useSound(welcome);
   const navigate = useNavigate();
-
   const smallDotsRefs = Array.from({ length: 33 }, () => createRef());
   const downDotsRefs = Array.from({ length: 36 }, () => createRef());
   const [mouseDown, setMouseDown] = useState(0);
@@ -12,7 +13,7 @@ export const WelcomeP = ({ updateData }) => {
     "matrix(1, 0, 0, 1, 0, 0)"
   );
   const [isHovered, setIsHovered] = useState(false);
-
+  const circleRef = useRef();
   const handleMouseDown = (event) => {
     setMouseDown(event.clientY);
     setIsPressed(true);
@@ -40,19 +41,25 @@ export const WelcomeP = ({ updateData }) => {
       // setIsPressed(false);
     }
   };
+  let newY = 0;
   const handleMouseMove = (event) => {
     if (isPressed) {
       requestAnimationFrame(() => {
-        let newY = event.clientY - mouseDown;
+        // let newCircleY = parseFloat(
+        //   circleRef.current.getBoundingClientRect().y
+        // );
+        // console.log(newCircleY - event.clientY);
+        // console.log(event.clientY - mouseDown);
+        if (newY < 190) newY = event.clientY - mouseDown;
         if (newY < 0) newY = 0;
         setTransformValue(`matrix(0.5, 0, 0, 0.5, 0, ${newY})`);
         if (newY > 180) {
           updateData(true);
-          // navigate("/hr");
           setTransformValue(`matrix(1, 0, 0, 1, 0, 0)`);
           setIsPressed(false);
           setIsHovered(false);
           setMouseDown(0);
+          play();
         }
       });
     }
@@ -88,6 +95,7 @@ export const WelcomeP = ({ updateData }) => {
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseLeave}
           onMouseEnter={handleMouseEnter}
+          ref={circleRef}
         >
           <div
             className="circle main"

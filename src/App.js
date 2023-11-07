@@ -20,11 +20,13 @@ function App() {
     <>
       <Menu></Menu>
       {firstTime ? (
-        <Routes>
-          <Route path="/" element={<AwasomeTable />} />
-          <Route path="/extra" element={<Extra />} />
-          <Route path="/hr" element={<Hr />} />
-        </Routes>
+        <>
+          <Routes>
+            <Route path="/" element={<AwasomeTable />} />
+            <Route path="/extra" element={<Extra />} />
+            <Route path="/hr" element={<Hr />} />
+          </Routes>
+        </>
       ) : (
         <WelcomeP updateData={updateData} />
       )}
