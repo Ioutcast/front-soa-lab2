@@ -11,6 +11,7 @@
   --color-2: var(--color-base), calc(var(--color-start) + var(--color-step) * 3);
   --colour-1: 130, calc(var(--saturation) - 5%), calc(21% + 20%);
   --colour-2: 130, calc(var(--saturation) - 5%), calc(25% + 20%);
+  --colour-3: 130, calc(var(--saturation) - 5%), calc(50% + 20%);
   --test-1: 130, calc(var(--saturation) - 5%), calc(50% + 20%);
   --test-2: 130, calc(var(--saturation) - 5%), calc(57% + 20%);
   --pad-1: 0.3em 0.8em;
@@ -154,4 +155,127 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+input[type="number"],
+input[type="text"],
+textarea {
+  -moz-appearance: textfield;
+  background: inherit;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  outline: 0;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+  -moz-appearance: textfield;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: inherit;
+  outline: 0;
+  border: 0;
+  margin-left: 10px;
+  padding: 5px;
+  margin-right: 25px;
+  margin-left: 15px;
+}
+.filters .filter {
+  background: hsl(var(--color-2));
+}
+.filter {
+  padding: 25px;
+  border-radius: 10px;
+}
+.filters {
+  --cl-1: 63, 85%, 89%;
+  --cl-2: 335, 34%, 61%;
+  --cl-3: 334.55deg, 33.33%, 61.18%;
+  --cl-4: 334.55deg, 100%, 91.64%;
+  --hue: 232;
+  --saturation: 15%;
+  --color-start: 6%;
+  --color-step: 4%;
+  --bstep-1: 5;
+  --step-1: var(--bstep-1);
+  --color-2: var(--color-base), calc(var(--color-start) + var(--color-step) * 3);
+  --clr-1: var(--hue), var(--saturation),
+    calc(var(--color-start) + var(--color-step) * var(--step-1));
+  position: relative;
+  width: 1350px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.txt-nowrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sort {
+  height: 50px;
+  display: flex;
+  gap: 15px;
+  width: 1305px;
+}
+.outer {
+  height: 50px;
+  display: flex;
+  gap: 15px;
+  width: 350px;
+}
+.query__filter,
+.id__filter,
+.name__filter,
+.x__filter,
+.y__filter,
+.creationDate__filter,
+.salary__filter,
+.startDate__filter,
+.endDate__filter,
+.position__filter,
+.Organization__id__filter,
+.Organization__name__filter,
+.Organization__annualTurnover__filter {
+  display: flex;
+  justify-content: center;
+  /* background-color: hsl(var(--clr-1)); */
+  width: 100%;
+  position: relative;
+}
+.input-v3:before {
+  width: 100%;
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: -7px;
+  right: 0px;
+  bottom: 0px;
+  background: hsl(var(--clr-1));
+  border-radius: 5px;
+  outline: 2px solid hsl(var(--brdr-1));
+  transition: var(--animation-2) ease;
+  transition-property: background, border, outline, top, left, right, bottom,
+    opacity;
+}
+.input__filter {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  height: 100%;
+}
+.filter_flex {
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-between;
 }

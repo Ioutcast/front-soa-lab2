@@ -247,6 +247,7 @@ p {
   text-align: center;
 }
 .menu {
+  z-index: 1;
   height: 45px;
   margin-top: 20px;
   position: relative;
