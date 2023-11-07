@@ -17,3 +17,8 @@ code {
     url("./fonts/VisbyRoundCFDemiBold.ttf") format("truetype");
   font-weight: normal;
 }
+@font-face {
+  font-family: "icomoon";
+  src: local("icomoon"), url("./fonts/icomoon.ttf") format("truetype");
+  font-weight: normal;
+}

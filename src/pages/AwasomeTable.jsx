@@ -3,6 +3,8 @@ import WorkerFrame from "./WorkerFrame";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import xml2js, { parseString } from "xml2js";
+import IcomoonReact, { iconList } from "icomoon-react";
+import iconSet from "../mp3f/selection.json";
 
 const AwasomeTable = () => {
   const [filterState, setFilterState] = useState({});
@@ -15,6 +17,8 @@ const AwasomeTable = () => {
     pageSize: 10,
     total: 0,
   });
+  const [errorMsg, setErrorMsg] = useState("");
+  const [codeMsg, setCodeMsg] = useState(500);
   const handleChangeSort = (event) => {
     const allowedWords = [
       "id",
@@ -45,7 +49,7 @@ const AwasomeTable = () => {
     }
   };
   const handleChange = (event) => {
-    const pattern = /^(!=|=|<|>|<=|>=)\s*\d+$/;
+    const pattern = /^(!=|=|<|>|<=|>=)\s*[a-zA-Z0-9]+$/;
 
     let inputValue = event.target.value;
     let columnKey = event.target.id;
@@ -57,7 +61,7 @@ const AwasomeTable = () => {
       setFilterState(updatedFilterState);
       return;
     }
-    const pattern1 = /^([<>!=]+)\s*(\d+)$/;
+    const pattern1 = /^([<>!=]+)\s*([a-zA-Z0-9]+)$/;
 
     const match = inputValue.match(pattern1);
     if (match) {
@@ -75,6 +79,23 @@ const AwasomeTable = () => {
   useEffect(() => {
     loadData(1);
   }, [filterState, sortFields]);
+  const onClickRight = () => {
+    if (pagination.total / pagination.pageSize > pagination.current)
+      setPagination({
+        ...pagination,
+        current: pagination.current + 1,
+      });
+  };
+  const onClickLeft = () => {
+    if (pagination.current > 1)
+      setPagination({
+        ...pagination,
+        current: pagination.current - 1,
+      });
+  };
+  useEffect(() => {
+    loadData(pagination.current);
+  }, [pagination.current]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -110,8 +131,17 @@ const AwasomeTable = () => {
 
       const url = `https://localhost:9000/company/workers?${queryString}`;
       const response = await axios.get(url).catch((err) => {
-        console.log(err);
+        parseString(err.response.data, (err, result) => {
+          setErrorMsg(result.Error.message[0]);
+          setCodeMsg(400);
+        });
+        setPagination({
+          current: 1,
+          pageSize: 10,
+          total: 0,
+        });
       });
+
       response
         ? parseString(response.data, (err, result) => {
             if (err) {
@@ -193,7 +223,7 @@ const AwasomeTable = () => {
       <div className="statistics">
         <div className="statistics welcome-screen">
           <div className="count-stat click" style={{ paddingRight: 15 }}>
-            <h1 style={{ color: "#65687B" }}>100</h1>
+            <h1 style={{ color: "#65687B" }}>{pagination.total}</h1>
             <a style={{ color: "#65687B" }}>работников</a>
           </div>
           <div className="mini-statistics">
@@ -214,7 +244,7 @@ const AwasomeTable = () => {
           <div style={{ marginBottom: 10 }}>Worker Filters</div>
           <div className="sort">
             <div className="sort__elements_title text-nowrap">
-              <i class="icon-settings"></i>
+              <span class="icon-stack icon-spetc"></span>
               <span>Sort Elements</span>
             </div>
             <div className="input-v3 query__filter" style={{ width: "100%" }}>
@@ -231,10 +261,10 @@ const AwasomeTable = () => {
               />
             </div>
           </div>
-          <div className="filter_flex">
+          <div className="input-v4 filter_flex">
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-size"></i>
+                <span class="icon-user"></span>
                 <span>Name:</span>
               </div>
               <div className="input-v3 name__filter">
@@ -251,7 +281,7 @@ const AwasomeTable = () => {
             </div>
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-star"></i>
+                <span class="icon-location"></span>
                 <span>Coord_x:</span>
               </div>
               <div className="input-v3 x__filter">
@@ -268,7 +298,7 @@ const AwasomeTable = () => {
             </div>
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-views"></i>
+                <span class="icon-location2"></span>
                 <span>Coord_y:</span>
               </div>
               <div className="input-v3 y__filter">
@@ -287,7 +317,7 @@ const AwasomeTable = () => {
           <div className="filter_flex">
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-download"></i>
+                <span class="icon-accessibility"></span>
                 <span>Creation Date:</span>
               </div>
               <div className="input-v3 creationDate__filter">
@@ -304,7 +334,7 @@ const AwasomeTable = () => {
             </div>
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-download"></i>
+                <span class="icon-neutral"></span>
                 <span>Start Date:</span>
               </div>
               <div className="input-v3 startDate__filter">
@@ -321,7 +351,7 @@ const AwasomeTable = () => {
             </div>
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-download"></i>
+                <span class="icon-baffled"></span>
                 <span>End Date:</span>
               </div>
               <div className="input-v3 endDate__filter">
@@ -340,7 +370,7 @@ const AwasomeTable = () => {
           <div className="filter_flex">
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-download"></i>
+                <span class="icon-arrow-up-right2"></span>
                 <span>Salary:</span>
               </div>
               <div className="input-v3 salary__filter">
@@ -357,7 +387,7 @@ const AwasomeTable = () => {
             </div>
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-download"></i>
+                <span class="icon-embed"></span>
                 <span>Position:</span>
               </div>
               <div className="input-v3 position__filter">
@@ -377,7 +407,7 @@ const AwasomeTable = () => {
           <div className="filter_flex">
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-download"></i>
+                <span class="icon-embed"></span>
                 <span>Id:</span>
               </div>
               <div className="input-v3 Organization__id__filter">
@@ -394,7 +424,7 @@ const AwasomeTable = () => {
             </div>
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-download"></i>
+                <span class="icon-flickr4"></span>
                 <span>Name:</span>
               </div>
               <div className="input-v3 Organization__name__filter">
@@ -412,7 +442,7 @@ const AwasomeTable = () => {
 
             <div className="outer">
               <div class="txt-nowrap">
-                <i class="icon-download"></i>
+                <span class="icon-libreoffice"></span>
                 <span>Annual Turnover:</span>
               </div>
               <div className="input-v3 Organization__annualTurnover__filter">
@@ -430,6 +460,84 @@ const AwasomeTable = () => {
           </div>
         </div>
       </div>
+      {pagination.total / pagination.pageSize >= 1 ? (
+        <div className="pagination__arr">
+          <div className={pagination.current <= 1 ? "left click-dsb" : "left"}>
+            <div
+              className={pagination.current <= 1 ? "" : "click"}
+              style={{ fontSize: 34 }}
+              onClick={onClickLeft}
+            >
+              {"<"}
+            </div>
+          </div>
+          <div
+            className="curr_page"
+            style={{ marginLeft: 20, marginRight: 20 }}
+          >
+            <span style={{ fontSize: 34 }}>{pagination.current}</span>
+            <span style={{ fontSize: 34 }}>/</span>
+            <span style={{ fontSize: 34 }}>
+              {pagination.total / pagination.pageSize}
+            </span>
+          </div>
+
+          <div
+            className={
+              pagination.current >= pagination.total / pagination.pageSize
+                ? "right click-dsb"
+                : "right"
+            }
+          >
+            <div
+              className={
+                pagination.current >= pagination.total / pagination.pageSize
+                  ? "click-dsb"
+                  : "click"
+              }
+              style={{ fontSize: 34 }}
+              onClick={onClickRight}
+            >
+              {">"}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="statistics">
+          <div className="statistics mrT-10">
+            <div className="count-stat click" style={{ paddingRight: 15 }}>
+              {codeMsg == 500 ? (
+                <div className="img-error2"></div>
+              ) : (
+                <div className="img-error"></div>
+              )}
+            </div>
+            <div className="mini-statistics">
+              <div className="count-stat click" style={{ paddingRight: 15 }}>
+                {codeMsg != 500 ? (
+                  <>
+                    <h1 style={{ color: "#65687B" }}>
+                      Здесь могла бы быть ваша реклама
+                    </h1>
+                    <a style={{ color: "#65687B" }}>
+                      но здесь РЕКЛАМА REDGRY и ошибка:
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <h1 style={{ color: "#65687B" }}>Здесь могла бы быть</h1>
+                    <a style={{ color: "#65687B" }}>ваша реклама</a>
+                  </>
+                )}
+              </div>
+              <div class="dotted-dot"></div>
+              <div className="organizations click" style={{ marginTop: 9 }}>
+                <span style={{ color: "#65687B" }}>{errorMsg}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {jsonData ? (
         <div className="cont">
           {jsonData.map((worker, index) => (
@@ -437,7 +545,7 @@ const AwasomeTable = () => {
           ))}
         </div>
       ) : (
-        <div className="net">net</div>
+        <></>
       )}
     </>
   );

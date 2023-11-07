@@ -32,7 +32,7 @@ const WorkerFrame = ({ worker }) => {
           </div>
         </div>
         <div className="salary">
-          <i>S </i>
+          <i>Salary </i>
           <span>{worker.salary}</span>
         </div>
         <div class="line-horizontal"></div>
@@ -42,25 +42,24 @@ const WorkerFrame = ({ worker }) => {
         </div>
         <div className="date">
           <div className="start__date date-new">
-            <i>SD </i>
+            <i>Start Date</i>
             <span>{worker.startDate}</span>
           </div>
           <div className="end__date date-new">
-            <i>ED </i>
+            <i>End Date </i>
             <span>{worker.endDate}</span>
           </div>
         </div>
         <div class="line-horizontal"></div>
+        <div style={{ marginTop: 5, marginBottom: 5 }}>Organization</div>
         {worker.Organization ? (
           <div className="organization">
             <div className="organization__id">
-              <i>aa </i>
-              <span>{worker.Organization.id} </span>
+              <span>id {worker.Organization.id} </span>
             </div>
             <div class="dotted-dot"></div>
             <div className="organization__name">
-              <i>aa </i>
-              <span>{worker.Organization.fullName} </span>
+              <span className="org__name">{worker.Organization.fullName} </span>
             </div>
             <div className="organization__annualTurnover">
               <span>{worker.Organization.annualTurnover}$ </span>
