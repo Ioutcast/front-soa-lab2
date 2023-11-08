@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import CreateWorkerForm from "./CreateWorkerForm";
 
 const Menu = () => {
   const [myOpacity, setMyOpacity] = useState(Math.random());
   const navigate = useNavigate();
-
+  const [create, setCreate] = useState(false);
   useEffect(() => {
     const blinkInterval = setInterval(() => {
       setMyOpacity(Math.random());
@@ -21,6 +22,12 @@ const Menu = () => {
   };
   const goTable = () => {
     navigate("/");
+  };
+  const goCreate = () => {
+    navigate("/create");
+  };
+  const changeCreate = () => {
+    setCreate(!create);
   };
   return (
     <>
@@ -44,7 +51,7 @@ const Menu = () => {
                   <span class="icon-embed"></span>
                   Extra
                 </div>
-                <div className="nav_create click">
+                <div className="nav_create click" onClick={changeCreate}>
                   <span class="icon-user"></span>
                   Create
                 </div>
@@ -53,6 +60,7 @@ const Menu = () => {
           </div>
         </div>
       </div>
+      <CreateWorkerForm create={create} onChangeCreate={changeCreate} />
     </>
   );
 };

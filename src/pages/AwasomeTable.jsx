@@ -5,6 +5,7 @@ import axios from "axios";
 import xml2js, { parseString } from "xml2js";
 import IcomoonReact, { iconList } from "icomoon-react";
 import iconSet from "../mp3f/selection.json";
+import CreateWorkerForm from "./CreateWorkerForm";
 
 const AwasomeTable = () => {
   const [filterState, setFilterState] = useState({});

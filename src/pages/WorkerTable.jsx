@@ -720,7 +720,7 @@ export const WorkerTable = () => {
 
   return (
     <div>
-      <Form form={form3} onFinish={onFinish3}>
+      {/* <Form form={form3} onFinish={onFinish3}>
         <Table
           pagination={pagination}
           bordered={true}
@@ -730,7 +730,7 @@ export const WorkerTable = () => {
           style={{ marginTop: 2, textAlign: "center" }}
           onChange={handleTableChange}
         ></Table>
-      </Form>
+      </Form> */}
       <div className="container2">
         <div className="form-worker-changer">
           <Button className="add-btn" onClick={showModal} type="primary">

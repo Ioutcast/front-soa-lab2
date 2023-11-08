@@ -3,6 +3,7 @@ import "../styles/Worker.css";
 import UpdateWorkerForm from "./UpdateWorkerForm";
 import axios from "axios";
 import xml2js, { parseString } from "xml2js";
+import { toast } from "react-toastify";
 
 const WorkerFrame = ({ worker, loadData }) => {
   const [isUpdateFormVisible, setUpdateFormVisible] = useState(false);
@@ -42,7 +43,7 @@ const WorkerFrame = ({ worker, loadData }) => {
         },
       })
       .catch((error) => {
-        console.log(error);
+        toast("Ошибка обновления");
       });
     loadData(1);
     setUpdateFormVisible(false);

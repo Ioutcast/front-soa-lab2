@@ -9,15 +9,18 @@ import React, { useState } from "react";
 import { WelcomeP } from "./pages/WelcomeP";
 import AwasomeTable from "./pages/AwasomeTable";
 import Menu from "./pages/Menu";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   const [firstTime, setFirstTime] = useState(false);
   const updateData = (value) => {
     setFirstTime(value);
   };
-  // usePreventZoom();
+
+  usePreventZoom();
   return (
     <>
+      <ToastContainer />
       <Menu></Menu>
       {firstTime ? (
         <>
@@ -25,6 +28,7 @@ function App() {
             <Route path="/" element={<AwasomeTable />} />
             <Route path="/extra" element={<Extra />} />
             <Route path="/hr" element={<Hr />} />
+            <Route path="/create" element={<WorkerTable />} />
           </Routes>
         </>
       ) : (
