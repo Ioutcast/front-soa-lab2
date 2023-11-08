@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../styles/Worker.css";
-
+import axios from "axios";
+import xml2js, { parseString } from "xml2js";
+import { toast } from "react-toastify";
 const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
   const [updatedWorker, setUpdatedWorker] = useState({ ...worker });
 
@@ -31,6 +33,22 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
   };
   const handleCancel = () => {
     onUpdateWorker();
+  };
+  const handleDelete = async () => {
+    const response = await axios
+      .delete(`https://localhost:9000/company/workers/${updatedWorker.id}`)
+      .catch((error) => {
+        toast("Ошибка удаления");
+      });
+    onUpdateWorker();
+  };
+  const handleHrDelere = async () => {
+    onUpdateWorker();
+    const response = await axios
+      .delete(`https://localhost:9090/fire/${updatedWorker.id}`)
+      .catch((error) => {
+        toast("Ошибка увольнения");
+      });
   };
   return (
     <div className="">
@@ -174,6 +192,20 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
       <div className="but_wrap">
         <button className="click" onClick={handleSubmit}>
           Сохранить
+        </button>
+        <button
+          className="click"
+          onClick={handleDelete}
+          style={{ color: "red" }}
+        >
+          Удалить!
+        </button>
+        <button
+          className="click"
+          onClick={handleHrDelere}
+          style={{ color: "red" }}
+        >
+          Уволить!
         </button>
         <button className="click" onClick={handleCancel}>
           Отмена

@@ -79,7 +79,6 @@ const CreateWorkerForm = ({ create, onChangeCreate }) => {
         y: "",
         startDate: "",
         endDate: "",
-        endDate: "",
         organizationId: "",
         organizationName: "",
         organizationAnnualTurnover: "",

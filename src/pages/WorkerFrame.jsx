@@ -18,6 +18,7 @@ const WorkerFrame = ({ worker, loadData }) => {
         throw new Error("No ID found");
       }
     } catch (error) {
+      loadData(1);
       setUpdateFormVisible(false);
       return;
     }

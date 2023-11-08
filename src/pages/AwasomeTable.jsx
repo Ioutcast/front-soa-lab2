@@ -6,7 +6,8 @@ import xml2js, { parseString } from "xml2js";
 import IcomoonReact, { iconList } from "icomoon-react";
 import iconSet from "../mp3f/selection.json";
 import CreateWorkerForm from "./CreateWorkerForm";
-
+import { Tooltip } from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 const AwasomeTable = () => {
   const [filterState, setFilterState] = useState({});
   const [loading, setLoading] = useState(false);
@@ -247,6 +248,7 @@ const AwasomeTable = () => {
 
   return (
     <>
+      <Tooltip id="my-tooltip" />
       <div className="statistics">
         <div className="statistics welcome-screen">
           <div className="count-stat click" style={{ paddingRight: 15 }}>
@@ -269,7 +271,14 @@ const AwasomeTable = () => {
       <div className="filters">
         <div className="filter">
           <div style={{ marginBottom: 10 }}>Worker Filters</div>
-          <div className="sort">
+
+          <div
+            className="sort"
+            data-tooltip-id="my-tooltip"
+            data-tooltip-content="Доступные поля id, name, x, y, creationDate, 
+            salary, startDate, endDate, position, organization.name,
+             organization.annualTurnover. Перечисление через запятую."
+          >
             <div className="sort__elements_title text-nowrap">
               <span class="icon-stack icon-spetc"></span>
               <span>Sort Elements</span>
@@ -288,6 +297,7 @@ const AwasomeTable = () => {
               />
             </div>
           </div>
+
           <div className="input-v4 filter_flex">
             <div
               id={1}
@@ -298,7 +308,10 @@ const AwasomeTable = () => {
                 <span>Name:</span>
               </div>
               <div className="input-v3 name__filter">
+                <Tooltip id="my-tooltip2" />
                 <input
+                  data-tooltip-id="my-tooltip2"
+                  data-tooltip-content="Пример допустимого ввода: != = (вводимые данные)"
                   onClick={() => handleElementClick("name")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -321,7 +334,10 @@ const AwasomeTable = () => {
                 <span>Coord_x:</span>
               </div>
               <div className="input-v3 x__filter">
+                <Tooltip id="my-tooltip3" />
                 <input
+                  data-tooltip-id="my-tooltip3"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
                   onClick={() => handleElementClick("coordinates.x")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -343,7 +359,10 @@ const AwasomeTable = () => {
                 <span>Coord_y:</span>
               </div>
               <div className="input-v3 y__filter">
+                <Tooltip id="my-tooltip4" />
                 <input
+                  data-tooltip-id="my-tooltip4"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
                   onClick={() => handleElementClick("coordinates.y")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -367,7 +386,10 @@ const AwasomeTable = () => {
                 <span>Creation Date:</span>
               </div>
               <div className="input-v3 creationDate__filter">
+                <Tooltip id="my-tooltip5" />
                 <input
+                  data-tooltip-id="my-tooltip5"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
                   onClick={() => handleElementClick("creationdate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -389,7 +411,10 @@ const AwasomeTable = () => {
                 <span>Start Date:</span>
               </div>
               <div className="input-v3 startDate__filter">
+                <Tooltip id="my-tooltip6" />
                 <input
+                  data-tooltip-id="my-tooltip6"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
                   onClick={() => handleElementClick("startdate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -411,7 +436,10 @@ const AwasomeTable = () => {
                 <span>End Date:</span>
               </div>
               <div className="input-v3 endDate__filter">
+                <Tooltip id="my-tooltip67" />
                 <input
+                  data-tooltip-id="my-tooltip67"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
                   onClick={() => handleElementClick("enddate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -435,7 +463,10 @@ const AwasomeTable = () => {
                 <span>Salary:</span>
               </div>
               <div className="input-v3 salary__filter">
+                <Tooltip id="my-tooltip63" />
                 <input
+                  data-tooltip-id="my-tooltip63"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
                   onClick={() => handleElementClick("salary")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -457,7 +488,10 @@ const AwasomeTable = () => {
                 <span>Position:</span>
               </div>
               <div className="input-v3 position__filter">
+                <Tooltip id="my-tooltip633" />
                 <input
+                  data-tooltip-id="my-tooltip633"
+                  data-tooltip-content="Пример допустимого ввода: = !=(вводимые данные)"
                   onClick={() => handleElementClick("position")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -482,7 +516,10 @@ const AwasomeTable = () => {
                 <span>Id:</span>
               </div>
               <div className="input-v3 Organization__id__filter">
+                <Tooltip id="my-tooltip6233" />
                 <input
+                  data-tooltip-id="my-tooltip6233"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
                   onClick={() => handleElementClick("organization.id")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -504,7 +541,10 @@ const AwasomeTable = () => {
                 <span>Name:</span>
               </div>
               <div className="input-v3 Organization__name__filter">
+                <Tooltip id="my-tooltip62323" />
                 <input
+                  data-tooltip-id="my-tooltip62323"
+                  data-tooltip-content="Пример допустимого ввода: = != (вводимые данные)"
                   onClick={() => handleElementClick("organization.name")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -529,7 +569,10 @@ const AwasomeTable = () => {
                 <span>Annual Turnover:</span>
               </div>
               <div className="input-v3 Organization__annualTurnover__filter">
+                <Tooltip id="my-tooltip623231" />
                 <input
+                  data-tooltip-id="my-tooltip623231"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >= (вводимые данные)"
                   onClick={() =>
                     handleElementClick("organization.annualTurnover")
                   }
