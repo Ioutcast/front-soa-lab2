@@ -16,7 +16,6 @@ function App() {
   const updateData = (value) => {
     setFirstTime(value);
   };
-
   usePreventZoom();
   return (
     <>

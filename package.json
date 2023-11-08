@@ -2,6 +2,7 @@
   "name": "front-soa-lab2",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://se.ifmo.ru/~s284699/soa-front/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -24,9 +25,10 @@
     "xml2js": "^0.6.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "webpack serve --mode development",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "deploy": "react-scripts build && ssh -p2222 s284699@helios.se.ifmo.ru rm -rf ~/public_html/soa-front && scp -P 2222 -r \"C:/Users/Сергей/Desktop/front-soa-lab2/build\" s284699@helios.se.ifmo.ru:~/public_html/soa-front && start https://se.ifmo.ru/~s284699/soa-front/",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -48,6 +50,8 @@
     ]
   },
   "devDependencies": {
+    "base-href-webpack-plugin": "^1.0.2",
+    "html-webpack-plugin": "^5.5.3",
     "node-polyfill-webpack-plugin": "^2.0.1"
   }
 }
