@@ -139,6 +139,7 @@ export const WorkerTable = () => {
     });
     if (firstPlay == true) handlePlay();
   }, [pagination.current, filterState]);
+
   const [editingRow, setEditingRow] = useState(null);
 
   // const handleSort = (field) => {

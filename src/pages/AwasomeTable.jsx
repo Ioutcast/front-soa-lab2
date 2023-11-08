@@ -32,10 +32,15 @@ const AwasomeTable = () => {
       "position",
       "organization.name",
       "organization.annualTurnover",
+      "coordinates.x",
+      "coordinates.y",
     ];
     let inputString = event.target.value;
+    inputString = inputString.replace("x", "coordinates.x");
+    inputString = inputString.replace("y", "coordinates.y");
     const words = inputString.split(", ").map((word) => word.trim());
     const invalidWords = words.filter((word) => !allowedWords.includes(word));
+
     if (invalidWords.length > 0) {
       event.target.value = "";
       setSortFields([]);
@@ -49,11 +54,12 @@ const AwasomeTable = () => {
     }
   };
   const handleChange = (event) => {
-    const pattern = /^(!=|=|<|>|<=|>=)\s*[a-zA-Z0-9]+$/;
+    const pattern =
+      /^(!=|=|<|>|<=|>=)\s*(\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(Z)?)?|[a-zA-Z0-9]+)$/;
 
     let inputValue = event.target.value;
     let columnKey = event.target.id;
-
+    handleElementUnClick(event.target.id);
     if (!pattern.test(inputValue)) {
       event.target.value = "";
       const updatedFilterState = { ...filterState };
@@ -61,12 +67,15 @@ const AwasomeTable = () => {
       setFilterState(updatedFilterState);
       return;
     }
-    const pattern1 = /^([<>!=]+)\s*([a-zA-Z0-9]+)$/;
+    const pattern1 =
+      /^(!=|=|<|>|<=|>=)\s*(\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(Z)?)?|[a-zA-Z0-9]+)$/;
 
     const match = inputValue.match(pattern1);
     if (match) {
       const operator = transformOperator(match[1]);
-      const value = match[2];
+      let value = match[2];
+      if (columnKey == "creationdate" && !value.endsWith("Z")) value += "Z";
+
       setFilterState((prevFilterState) => ({
         ...prevFilterState,
         [columnKey]: {
@@ -105,7 +114,6 @@ const AwasomeTable = () => {
   const loadData = async (pageCur) => {
     try {
       const queryParams = new URLSearchParams();
-      console.log(filterState);
       for (let columnKey in filterState) {
         const filter = filterState[columnKey];
         if (filter.operator && filter.value) {
@@ -184,6 +192,8 @@ const AwasomeTable = () => {
                 setJsonData(transformedDataArray);
                 // console.log(transformedDataArray);
               } catch (error) {
+                console.log(codeMsg);
+                setCodeMsg(200);
                 setPagination({
                   current: 1,
                   pageSize: 10,
@@ -218,6 +228,22 @@ const AwasomeTable = () => {
         return operator;
     }
   };
+  const [clickedElements, setClickedElements] = useState(new Set());
+
+  const handleElementClick = (elementId) => {
+    const updatedClickedElements = new Set(clickedElements);
+    updatedClickedElements.add(elementId);
+    setClickedElements(updatedClickedElements);
+  };
+  const handleElementUnClick = (elementId) => {
+    const updatedClickedElements = new Set(clickedElements);
+
+    if (clickedElements.has(elementId)) {
+      updatedClickedElements.delete(elementId);
+    }
+    setClickedElements(updatedClickedElements);
+  };
+
   return (
     <>
       <div className="statistics">
@@ -228,12 +254,12 @@ const AwasomeTable = () => {
           </div>
           <div className="mini-statistics">
             <div className="positions click" style={{ marginTop: 10 }}>
-              <h4>4</h4>
+              <h2>4</h2>
               <a style={{ color: "#65687B" }}>позиций</a>
             </div>
             <div class="dotted-dot"></div>
             <div className="organizations click" style={{ marginTop: 10 }}>
-              <h4>1000</h4>
+              <h2>5</h2>
               <a style={{ color: "#65687B" }}>организаций</a>
             </div>
           </div>
@@ -247,7 +273,7 @@ const AwasomeTable = () => {
               <span class="icon-stack icon-spetc"></span>
               <span>Sort Elements</span>
             </div>
-            <div className="input-v3 query__filter" style={{ width: "100%" }}>
+            <div className="input-v5 query__filter" style={{ width: "100%" }}>
               <input
                 id="sortElements"
                 onKeyDown={handleKeyDownSort}
@@ -262,13 +288,17 @@ const AwasomeTable = () => {
             </div>
           </div>
           <div className="input-v4 filter_flex">
-            <div className="outer">
+            <div
+              id={1}
+              className={`outer ${clickedElements.has("name") ? "" : "-iNON"}`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-user"></span>
                 <span>Name:</span>
               </div>
               <div className="input-v3 name__filter">
                 <input
+                  onClick={() => handleElementClick("name")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="name"
@@ -279,30 +309,41 @@ const AwasomeTable = () => {
                 />
               </div>
             </div>
-            <div className="outer">
+            <div
+              id={2}
+              className={`outer ${
+                clickedElements.has("coordinates.x") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-location"></span>
                 <span>Coord_x:</span>
               </div>
               <div className="input-v3 x__filter">
                 <input
+                  onClick={() => handleElementClick("coordinates.x")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="coordinates.x"
-                  className="input__filter"
+                  className="input__filter -iNON"
                   style={{ width: "100%" }}
                   type="text"
                   placeholder="Type range"
                 />
               </div>
             </div>
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("coordinates.y") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-location2"></span>
                 <span>Coord_y:</span>
               </div>
               <div className="input-v3 y__filter">
                 <input
+                  onClick={() => handleElementClick("coordinates.y")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="coordinates.y"
@@ -315,13 +356,18 @@ const AwasomeTable = () => {
             </div>
           </div>
           <div className="filter_flex">
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("creationdate") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-accessibility"></span>
                 <span>Creation Date:</span>
               </div>
               <div className="input-v3 creationDate__filter">
                 <input
+                  onClick={() => handleElementClick("creationdate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="creationdate"
@@ -332,13 +378,18 @@ const AwasomeTable = () => {
                 />
               </div>
             </div>
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("startdate") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-neutral"></span>
                 <span>Start Date:</span>
               </div>
               <div className="input-v3 startDate__filter">
                 <input
+                  onClick={() => handleElementClick("startdate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="startdate"
@@ -349,13 +400,18 @@ const AwasomeTable = () => {
                 />
               </div>
             </div>
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("enddate") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-baffled"></span>
                 <span>End Date:</span>
               </div>
               <div className="input-v3 endDate__filter">
                 <input
+                  onClick={() => handleElementClick("enddate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="enddate"
@@ -368,13 +424,18 @@ const AwasomeTable = () => {
             </div>
           </div>
           <div className="filter_flex">
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("salary") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-arrow-up-right2"></span>
                 <span>Salary:</span>
               </div>
               <div className="input-v3 salary__filter">
                 <input
+                  onClick={() => handleElementClick("salary")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="salary"
@@ -385,13 +446,18 @@ const AwasomeTable = () => {
                 />
               </div>
             </div>
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("position") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-embed"></span>
                 <span>Position:</span>
               </div>
               <div className="input-v3 position__filter">
                 <input
+                  onClick={() => handleElementClick("position")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="position"
@@ -405,13 +471,18 @@ const AwasomeTable = () => {
           </div>
           <div>Organization</div>
           <div className="filter_flex">
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("organization.id") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-embed"></span>
                 <span>Id:</span>
               </div>
               <div className="input-v3 Organization__id__filter">
                 <input
+                  onClick={() => handleElementClick("organization.id")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="organization.id"
@@ -422,13 +493,18 @@ const AwasomeTable = () => {
                 />
               </div>
             </div>
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("organization.name") ? "" : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-flickr4"></span>
                 <span>Name:</span>
               </div>
               <div className="input-v3 Organization__name__filter">
                 <input
+                  onClick={() => handleElementClick("organization.name")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="organization.name"
@@ -440,13 +516,22 @@ const AwasomeTable = () => {
               </div>
             </div>
 
-            <div className="outer">
+            <div
+              className={`outer ${
+                clickedElements.has("organization.annualTurnover")
+                  ? ""
+                  : "-iNON"
+              }`}
+            >
               <div class="txt-nowrap">
                 <span class="icon-libreoffice"></span>
                 <span>Annual Turnover:</span>
               </div>
               <div className="input-v3 Organization__annualTurnover__filter">
                 <input
+                  onClick={() =>
+                    handleElementClick("organization.annualTurnover")
+                  }
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
                   id="organization.annualTurnover"
@@ -460,7 +545,7 @@ const AwasomeTable = () => {
           </div>
         </div>
       </div>
-      {pagination.total / pagination.pageSize >= 1 ? (
+      {pagination.total / pagination.pageSize >= 1 || pagination.total > 0 ? (
         <div className="pagination__arr">
           <div className={pagination.current <= 1 ? "left click-dsb" : "left"}>
             <div
@@ -478,7 +563,7 @@ const AwasomeTable = () => {
             <span style={{ fontSize: 34 }}>{pagination.current}</span>
             <span style={{ fontSize: 34 }}>/</span>
             <span style={{ fontSize: 34 }}>
-              {pagination.total / pagination.pageSize}
+              {Math.ceil(pagination.total / pagination.pageSize)}
             </span>
           </div>
 
@@ -515,14 +600,23 @@ const AwasomeTable = () => {
             <div className="mini-statistics">
               <div className="count-stat click" style={{ paddingRight: 15 }}>
                 {codeMsg != 500 ? (
-                  <>
-                    <h1 style={{ color: "#65687B" }}>
-                      Здесь могла бы быть ваша реклама
-                    </h1>
-                    <a style={{ color: "#65687B" }}>
-                      но здесь РЕКЛАМА REDGRY и ошибка:
-                    </a>
-                  </>
+                  codeMsg != 200 ? (
+                    <>
+                      <h1 style={{ color: "#65687B" }}>
+                        Здесь могла бы быть ваша реклама
+                      </h1>
+                      <a style={{ color: "#65687B" }}>
+                        но здесь РЕКЛАМА REDGRY и ошибка:
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <h1 style={{ color: "#65687B" }}>
+                        В вашем запросе 0 работников
+                      </h1>
+                      <a style={{ color: "#65687B" }}>-_-</a>
+                    </>
+                  )
                 ) : (
                   <>
                     <h1 style={{ color: "#65687B" }}>Здесь могла бы быть</h1>
@@ -530,9 +624,13 @@ const AwasomeTable = () => {
                   </>
                 )}
               </div>
-              <div class="dotted-dot"></div>
+              {codeMsg != 200 ? <div class="dotted-dot"></div> : <></>}
               <div className="organizations click" style={{ marginTop: 9 }}>
-                <span style={{ color: "#65687B" }}>{errorMsg}</span>
+                {codeMsg != 200 ? (
+                  <span style={{ color: "#65687B" }}>{errorMsg}</span>
+                ) : (
+                  <a style={{ color: "#65687B" }}>и РЕКЛАМА REDGRY</a>
+                )}
               </div>
             </div>
           </div>
@@ -541,7 +639,7 @@ const AwasomeTable = () => {
       {jsonData ? (
         <div className="cont">
           {jsonData.map((worker, index) => (
-            <WorkerFrame key={index} worker={worker} />
+            <WorkerFrame key={index} worker={worker} loadData={loadData} />
           ))}
         </div>
       ) : (

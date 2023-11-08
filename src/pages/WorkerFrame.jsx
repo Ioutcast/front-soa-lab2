@@ -1,17 +1,50 @@
 import React, { useState } from "react";
 import "../styles/Worker.css";
 import UpdateWorkerForm from "./UpdateWorkerForm";
+import axios from "axios";
+import xml2js, { parseString } from "xml2js";
 
-const WorkerFrame = ({ worker }) => {
+const WorkerFrame = ({ worker, loadData }) => {
   const [isUpdateFormVisible, setUpdateFormVisible] = useState(false);
 
   const handleUpdateClick = () => {
     setUpdateFormVisible(!isUpdateFormVisible);
   };
 
-  const handleUpdateWorker = (updatedWorker) => {
-    console.log("Обновленные данные работника:", updatedWorker);
-
+  const handleUpdateWorker = async (updatedWorker) => {
+    try {
+      if (!updatedWorker.id) {
+        throw new Error("No ID found");
+      }
+    } catch (error) {
+      setUpdateFormVisible(false);
+      return;
+    }
+    let values = updatedWorker;
+    let id = values.id;
+    delete values.id;
+    const organization = {
+      id: values.organization_id,
+      fullName: values.organization_fullName,
+      annualTurnover: values.organization_annualTurnover,
+    };
+    delete values.key;
+    values.Coordinates = values.Coordinate;
+    delete values.Coordinate;
+    values.creationDate = values.creationDate + "Z";
+    console.log("values=", values);
+    const builder = new xml2js.Builder({ rootName: "WorkerInfo" });
+    const xmlData = builder.buildObject(values);
+    const response = await axios
+      .put(`https://localhost:9000/company/workers/${id}`, xmlData, {
+        headers: {
+          "Content-Type": "application/xml",
+        },
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    loadData(1);
     setUpdateFormVisible(false);
   };
   return (
@@ -93,14 +126,6 @@ const WorkerFrame = ({ worker }) => {
                 worker={worker}
                 onUpdateWorker={handleUpdateWorker}
               />
-              <button>Сохранить</button>
-              <button
-                onClick={() => {
-                  setUpdateFormVisible(false);
-                }}
-              >
-                Отмена
-              </button>
             </div>
           </div>
         </>

@@ -8,7 +8,7 @@ const Menu = () => {
   useEffect(() => {
     const blinkInterval = setInterval(() => {
       setMyOpacity(Math.random());
-    }, Math.random() * 500 + 400);
+    }, Math.random() * 500 + 200);
     return () => {
       clearInterval(blinkInterval);
     };
@@ -28,7 +28,7 @@ const Menu = () => {
         <div className="menu__container">
           <div className="menu__inner">
             <div style={{ opacity: myOpacity }} className="paintsvg">
-              Васильков & Ихун{" "}
+              Васильков & Ихун
             </div>
             <div className="nav">
               <div className="nav__inner">

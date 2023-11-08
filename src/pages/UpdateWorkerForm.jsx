@@ -27,10 +27,11 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
   };
 
   const handleSubmit = () => {
-    // Вызов функции onUpdateWorker, чтобы передать обновленные данные worker
     onUpdateWorker(updatedWorker);
   };
-
+  const handleCancel = () => {
+    onUpdateWorker();
+  };
   return (
     <div className="">
       <div className="worker__inner">
@@ -170,7 +171,14 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
           </>
         )}
       </div>
-      <button onClick={handleSubmit}>Сохранить</button>
+      <div className="but_wrap">
+        <button className="click" onClick={handleSubmit}>
+          Сохранить
+        </button>
+        <button className="click" onClick={handleCancel}>
+          Отмена
+        </button>
+      </div>
     </div>
   );
 };
