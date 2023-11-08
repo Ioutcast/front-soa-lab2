@@ -157,9 +157,9 @@
   text-overflow: ellipsis;
 }
 
-input[type="number"],
-input[type="text"],
-textarea {
+.filter input[type="number"],
+.filter input[type="text"],
+.filter textarea {
   -moz-appearance: textfield;
   background: inherit;
   border: 0;
@@ -170,9 +170,9 @@ textarea {
   outline: 0;
 }
 
-input[type="text"],
-input[type="number"],
-textarea {
+.filter input[type="text"],
+.filter input[type="number"],
+.filter textarea {
   -moz-appearance: textfield;
   font-family: inherit;
   font-weight: inherit;
@@ -418,4 +418,68 @@ textarea {
 }
 .paintsvg:hover {
   opacity: 0.9;
+}
+.worker:hover {
+  opacity: 0.5;
+}
+/* .worker:before {
+  content: "";
+  position: absolute;
+  opacity: 0.5;
+} */
+/* .worker:before {
+  top: 10px;
+  /* bottom: 0; */
+/* left: 120px;
+  content: "Update";
+  position: absolute;
+  opacity: 0.5;
+  font-size: 232px; */
+/* border: 54px; */
+/* outline: 1px solid red; */
+/* border-radius: 50%; */
+/* height: 50px; */
+/* width: 50px; */
+/* margin-top: -12px; */
+/* }  */
+
+input[type="text"],
+input[type="number"],
+textarea {
+  margin-bottom: 5px;
+  -moz-appearance: textfield;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: inherit;
+  outline: 0;
+  /* border: 0; */
+  /* margin-left: 10px; */
+  /* padding: 5px;
+  margin-right: 25px;
+  margin-left: 15px; */
+}
+.modal-overlay {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: black;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal button {
+  margin: 10px;
 }
