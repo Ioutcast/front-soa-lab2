@@ -171,6 +171,7 @@ const AwasomeTable = () => {
               let index = 0;
               try {
                 const transformedDataArray = content.map((contentItem) => {
+                  console.log(contentItem)
                   const transformedObj = {};
                   transformedObj.key = index++;
                   transformedObj.id = contentItem.id[0];
@@ -184,13 +185,17 @@ const AwasomeTable = () => {
                   transformedObj.startDate = contentItem.startDate[0];
                   transformedObj.endDate = contentItem.endDate[0];
                   transformedObj.position = contentItem.position[0];
+                  console.log(contentItem.Organization[0]=="")
+
+                  contentItem.Organization[0] !== "" ?
                   transformedObj.Organization = {
                     id: contentItem.Organization[0].id[0],
                     fullName: contentItem.Organization[0].fullName[0],
                     annualTurnover: parseFloat(
                       contentItem.Organization[0].annualTurnover[0]
                     ),
-                  };
+                  } : transformedObj.Organization = null;
+                
                   return transformedObj;
                 });
                 setJsonData(transformedDataArray);

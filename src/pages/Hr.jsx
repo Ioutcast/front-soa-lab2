@@ -121,7 +121,7 @@ export const Hr = () => {
               toast(result.Error.message[0]);
             }
           })
-        : toast("Ошибка");
+        : console.log("Ошибка");
       // toast("Ошибка");
     } finally {
       setLoading(false);

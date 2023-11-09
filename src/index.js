@@ -6,10 +6,12 @@ import { BrowserRouter } from "react-router-dom";
 import "./fonts/VisbyRoundCFDemiBold.ttf";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <BrowserRouter basename="/~s284699/soa-front">
-    <App />
-  </BrowserRouter>
+root.render( <
+    BrowserRouter basename = "/~s284699/soa-front" >
+    <
+    App / >
+    <
+    /BrowserRouter>
 );
 // basename="/~s284699/soa-front"
 // package

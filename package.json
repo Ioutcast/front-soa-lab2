@@ -1,59 +1,60 @@
 {
-  "name": "front-soa-lab2",
-  "version": "0.1.0",
-  "private": true,
-  "homepage": "https://se.ifmo.ru/~s284699/soa-front/",
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "antd": "^5.9.3",
-    "axios": "^1.5.0",
-    "icomoon-react": "^3.0.0",
-    "process": "^0.11.10",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^4.11.0",
-    "react-router-dom": "^6.18.0",
-    "react-scripts": "5.0.1",
-    "react-toastify": "^9.1.3",
-    "react-tooltip": "^5.22.0",
-    "stream": "^0.0.2",
-    "timers": "^0.1.1",
-    "use-sound": "^4.0.1",
-    "web-vitals": "^2.1.4",
-    "xml2js": "^0.6.2"
-  },
-  "scripts": {
-    "start": "webpack serve --mode development",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "deploy": "react-scripts build && ssh -p2222 s284699@helios.se.ifmo.ru rm -rf ~/public_html/soa-front && scp -P 2222 -r \"C:/Users/Сергей/Desktop/front-soa-lab2/build\" s284699@helios.se.ifmo.ru:~/public_html/soa-front && start https://se.ifmo.ru/~s284699/soa-front/",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@babel/preset-react": "^7.22.15",
-    "base-href-webpack-plugin": "^1.0.2",
-    "html-webpack-plugin": "^5.5.3",
-    "node-polyfill-webpack-plugin": "^2.0.1",
-    "webpack-cli": "^5.1.4"
-  }
+    "name": "front-soa-lab2",
+    "version": "0.1.0",
+    "private": true,
+    "homepage": "https://se.ifmo.ru/~s284699/soa-front/",
+    "dependencies": {
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "antd": "^5.9.3",
+        "axios": "^1.5.0",
+        "icomoon-react": "^3.0.0",
+        "process": "^0.11.10",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-icons": "^4.11.0",
+        "react-router-dom": "^6.18.0",
+        "react-scripts": "5.0.1",
+        "react-toastify": "^9.1.3",
+        "react-tooltip": "^5.22.0",
+        "stream": "^0.0.2",
+        "timers": "^0.1.1",
+        "use-sound": "^4.0.1",
+        "web-vitals": "^2.1.4",
+        "xml2js": "^0.6.2"
+    },
+    "scripts": {
+        "start": "webpack serve --mode development",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "deploy": "react-scripts build && ssh -p2222 s284699@helios.se.ifmo.ru rm -rf ~/public_html/soa-front && scp -P 2222 -r \"C:/Users/User/Desktop/front-soa-lab/build\" s284699@helios.se.ifmo.ru:~/public_html/soa-front && start https://se.ifmo.ru/~s284699/soa-front/",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@babel/preset-react": "^7.22.15",
+        "base-href-webpack-plugin": "^1.0.2",
+        "html-webpack-plugin": "^5.5.3",
+        "node-polyfill-webpack-plugin": "^2.0.1",
+        "webpack": "^5.89.0",
+        "webpack-cli": "^5.1.4"
+    }
 }

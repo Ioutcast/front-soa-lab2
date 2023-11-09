@@ -172,7 +172,6 @@ export const Extra = () => {
       parseString(error.response.data, (err, result) => {
         if (err) {
           console.log("Ошибка при парсинге XML:", err);
-          toast("Ошибка");
         } else {
           console.log("Не Ошибка при парсинге XML:", result);
           toast(result.Error.message[0]);

@@ -110,7 +110,7 @@ const WorkerFrame = ({ worker, loadData }) => {
           </div>
           <div class="line-horizontal"></div>
           <div style={{ marginTop: 5, marginBottom: 5 }}>Organization</div>
-          {worker.Organization ? (
+          {worker.Organization != null ? (
             <div className="organization">
               <div className="organization__id">
                 <span>id {worker.Organization.id} </span>
@@ -137,6 +137,7 @@ const WorkerFrame = ({ worker, loadData }) => {
               <UpdateWorkerForm
                 worker={worker}
                 onUpdateWorker={handleUpdateWorker}
+                loadData={loadData}
               />
             </div>
           </div>

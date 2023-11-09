@@ -3,7 +3,7 @@ import "../styles/Worker.css";
 import axios from "axios";
 import xml2js, { parseString } from "xml2js";
 import { toast } from "react-toastify";
-const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
+const UpdateWorkerForm = ({ worker, onUpdateWorker,loadData }) => {
   const [updatedWorker, setUpdatedWorker] = useState({ ...worker });
 
   // const handleInputChange = (e) => {
@@ -56,7 +56,7 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
   const handleHrDelere = async () => {
     onUpdateWorker();
     const response = await axios
-      .delete(`https://localhost:9090/fire/${updatedWorker.id}`)
+      .delete(`https://localhost:9090/server2/hr/fire/${updatedWorker.id}`)
       .catch((error) => {
         error.response?.data
           ? parseString(error.response.data, (err, result) => {
@@ -68,9 +68,10 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
                 toast(result.Error.message[0]);
               }
             })
-          : toast("Ошибка увольнения");
+          : console.log("Ошибка увольнения");
         // toast("Ошибка увольнения");
       });
+      loadData(1);
   };
   return (
     <div className="">
