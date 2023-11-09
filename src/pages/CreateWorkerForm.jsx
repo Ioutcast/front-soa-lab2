@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import xml2js from "xml2js";
+import xml2js, { parseString } from "xml2js";
 import { toast } from "react-toastify";
 
 const CreateWorkerForm = ({ create, onChangeCreate }) => {
@@ -87,7 +87,14 @@ const CreateWorkerForm = ({ create, onChangeCreate }) => {
       });
       onChangeCreate();
     } catch (error) {
-      toast("Ошибка");
+      parseString(error.response.data, (err, result) => {
+        if (err) {
+          console.log("Ошибка при парсинге XML:", err);
+        } else {
+          console.log("Не Ошибка при парсинге XML:", result);
+          toast(result.Error.message[0]);
+        }
+      });
       setNewWorker({
         position: "",
         name: "",

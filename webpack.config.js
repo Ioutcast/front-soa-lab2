@@ -14,18 +14,21 @@ module.exports = {
   //       timers: false,
   //     },
   //   },
-  //   output: {
-  //     path: `${__dirname}/dist`,
-  //     filename: "bundle.js",
-  //     publicPath: "/",
-  //   },
-  devServer: {
-    historyApiFallback: true,
-  },
   output: {
-    path: path.join(__dirname, "../public"),
+    path: `${__dirname}/dist`,
     filename: "bundle.js",
-    publicPath: "https://se.ifmo.ru/~s284699/soa-front/",
+    publicPath: "/",
+  },
+  // devServer: {
+  //   historyApiFallback: true,
+  // },
+  // output: {
+  //   path: path.join(__dirname, "../public"),
+  //   filename: "bundle.js",
+  //   publicPath: "https://se.ifmo.ru/~s284699/soa-front/",
+  // },
+  devServer: {
+    port: 3000,
   },
   module: {
     rules: [
