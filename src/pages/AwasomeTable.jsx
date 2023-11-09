@@ -211,17 +211,17 @@ const AwasomeTable = () => {
         : setJsonData([]);
       setLoading(false);
     } catch (error) {
-      error.response?.data
-        ? parseString(error.response.data, (err, result) => {
-            if (err) {
-              console.log("Ошибка при парсинге XML:", err);
-              toast("Ошибка при парсинге XML?");
-            } else {
-              console.log("Не Ошибка при парсинге XML:", result);
-              toast(result.Error.message[0]);
-            }
-          })
-        : toast("Ошибка");
+      // error.response?.data
+      //   ? parseString(error.response.data, (err, result) => {
+      //       if (err) {
+      //         console.log("Ошибка при парсинге XML:", err);
+      //         toast("Ошибка при парсинге XML?");
+      //       } else {
+      //         console.log("Не Ошибка при парсинге XML:", result);
+      //         toast(result.Error.message[0]);
+      //       }
+      //     })
+      //   : toast("Ошибка");
       console.error("Ошибка :", error);
       setLoading(false);
     }
