@@ -7,7 +7,7 @@ import "./fonts/VisbyRoundCFDemiBold.ttf";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <BrowserRouter>
+  <BrowserRouter basename="/~s284699/soa-front">
     <App />
   </BrowserRouter>
 );

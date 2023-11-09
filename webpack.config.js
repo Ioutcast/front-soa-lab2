@@ -2,7 +2,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
-const { BaseHrefWebpackPlugin } = require("base-href-webpack-plugin");
+// const { BaseHrefWebpackPlugin } = require("base-href-webpack-plugin");
 
 module.exports = {
   //   plugins: [new NodePolyfillPlugin()],
@@ -19,17 +19,17 @@ module.exports = {
     filename: "bundle.js",
     publicPath: "/",
   },
-  // devServer: {
-  //   historyApiFallback: true,
-  // },
+  devServer: {
+    historyApiFallback: true,
+  },
   // output: {
   //   path: path.join(__dirname, "../public"),
   //   filename: "bundle.js",
   //   publicPath: "https://se.ifmo.ru/~s284699/soa-front/",
   // },
-  devServer: {
-    port: 3000,
-  },
+  // devServer: {
+  //   port: 3000,
+  // },
   module: {
     rules: [
       {
@@ -47,9 +47,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({ template: "./public/index.html" }),
-    new webpack.ProvidePlugin({
-      process: "process/browser",
-    }),
-    new webpack.EnvironmentPlugin({ ...process.env }),
+    // new webpack.ProvidePlugin({
+    //   process: "process/browser",
+    // }),
+    // new webpack.EnvironmentPlugin({ ...process.env }),
   ],
 };
