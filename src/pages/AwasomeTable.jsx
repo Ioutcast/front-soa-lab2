@@ -389,7 +389,7 @@ const AwasomeTable = () => {
                 <Tooltip id="my-tooltip5" />
                 <input
                   data-tooltip-id="my-tooltip5"
-                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные). Поддерживаемый тип вводымых данных: yyyy-mm-ddThh:mm:ss "
                   onClick={() => handleElementClick("creationdate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -414,7 +414,7 @@ const AwasomeTable = () => {
                 <Tooltip id="my-tooltip6" />
                 <input
                   data-tooltip-id="my-tooltip6"
-                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные). Поддерживаемый тип вводымых данных: yyyy-mm-dd "
                   onClick={() => handleElementClick("startdate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -439,7 +439,7 @@ const AwasomeTable = () => {
                 <Tooltip id="my-tooltip67" />
                 <input
                   data-tooltip-id="my-tooltip67"
-                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные)"
+                  data-tooltip-content="Пример допустимого ввода: < > = != <= >=(вводимые данные).Поддерживаемый тип вводымых данных: yyyy-mm-dd "
                   onClick={() => handleElementClick("enddate")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}

@@ -38,7 +38,18 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
     const response = await axios
       .delete(`https://localhost:9000/company/workers/${updatedWorker.id}`)
       .catch((error) => {
-        toast("Ошибка удаления");
+        error.response?.data
+          ? parseString(error.response.data, (err, result) => {
+              if (err) {
+                console.log("Ошибка при парсинге XML:", err);
+                toast("Ошибка удаления");
+              } else {
+                console.log("Не Ошибка при парсинге XML:", result);
+                toast(result.Error.message[0]);
+              }
+            })
+          : toast("Ошибка удаления");
+        // toast("Ошибка удаления");
       });
     onUpdateWorker();
   };
@@ -47,7 +58,18 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker }) => {
     const response = await axios
       .delete(`https://localhost:9090/fire/${updatedWorker.id}`)
       .catch((error) => {
-        toast("Ошибка увольнения");
+        error.response?.data
+          ? parseString(error.response.data, (err, result) => {
+              if (err) {
+                console.log("Ошибка при парсинге XML:", err);
+                toast("Ошибка увольнения");
+              } else {
+                console.log("Не Ошибка при парсинге XML:", result);
+                toast(result.Error.message[0]);
+              }
+            })
+          : toast("Ошибка увольнения");
+        // toast("Ошибка увольнения");
       });
   };
   return (

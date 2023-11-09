@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import WorkerService from "../API/WorkerService";
 import { parseString } from "xml2js";
 import { Form, DatePicker, Select, Button, Table } from "antd";
+import { toast } from "react-toastify";
 
 export const Extra = () => {
   const { Option } = Select;
@@ -168,6 +169,15 @@ export const Extra = () => {
       });
     } catch (error) {
       console.error("Ошибка при получении данных:", error);
+      parseString(error.response.data, (err, result) => {
+        if (err) {
+          console.log("Ошибка при парсинге XML:", err);
+          toast("Ошибка");
+        } else {
+          console.log("Не Ошибка при парсинге XML:", result);
+          toast(result.Error.message[0]);
+        }
+      });
     } finally {
       setLoading(false);
     }

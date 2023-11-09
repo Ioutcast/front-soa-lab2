@@ -44,7 +44,15 @@ const WorkerFrame = ({ worker, loadData }) => {
         },
       })
       .catch((error) => {
-        toast("Ошибка обновления");
+        parseString(error.response.data, (err, result) => {
+          if (err) {
+            console.log("Ошибка при парсинге XML:", err);
+            toast("Ошибка обновления");
+          } else {
+            console.log("Не Ошибка при парсинге XML:", result);
+            toast(result.Error.message[0]);
+          }
+        });
       });
     loadData(1);
     setUpdateFormVisible(false);

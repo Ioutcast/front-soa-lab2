@@ -111,7 +111,18 @@ export const Hr = () => {
         console.warn("Ответ сервера не содержит данных.");
       }
     } catch (error) {
-      toast("Ошибка");
+      error.response?.data
+        ? parseString(error.response.data, (err, result) => {
+            if (err) {
+              console.log("Ошибка при парсинге XML:", err);
+              toast("Ошибка");
+            } else {
+              console.log("Не Ошибка при парсинге XML:", result);
+              toast(result.Error.message[0]);
+            }
+          })
+        : toast("Ошибка");
+      // toast("Ошибка");
     } finally {
       setLoading(false);
     }
