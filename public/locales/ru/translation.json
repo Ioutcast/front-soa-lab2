@@ -1,0 +1,79 @@
+{
+  "welcome": {
+    "0": "Нажмите и перетащите кружок,",
+    "1": "чтобы открыть лабу по СОА!"
+  },
+  "creator": {
+    "0": "Васильков",
+    "1": "Ихун"
+  },
+  "menu": {
+    "table": "Таблица",
+    "hr": "Эйча́р",
+    "extra": "Доп. функции",
+    "create": "Создать рабочего"
+  },
+  "filters": {
+    "workerFilters": "Фильтры",
+    "sortElements": {
+      "title": "Элементы сортировки",
+      "placeholder": "id, name, x, y, creationDate, salary, startDate, endDate, position, organization.name, organization.annualTurnover"
+    },
+    "name": {
+      "label": "Имя",
+      "placeholder": "Введите диапазон"
+    },
+    "coordinates.x": {
+      "label": "Коорд. X",
+      "placeholder": "Введите диапазон"
+    },
+    "coordinates.y": {
+      "label": "Коорд. Y",
+      "placeholder": "Введите диапазон"
+    },
+    "creationdate": {
+      "label": "Дата создания",
+      "placeholder": "Введите диапазон"
+    },
+    "startdate": {
+      "label": "Дата начала",
+      "placeholder": "Введите диапазон"
+    },
+    "enddate": {
+      "label": "Дата окончания",
+      "placeholder": "Введите диапазон"
+    },
+    "salary": {
+      "label": "Заработная плата",
+      "placeholder": "Введите диапазон"
+    },
+    "position": {
+      "label": "Должность",
+      "placeholder": "Введите диапазон"
+    },
+    "organization.fields": {
+      "label": "Поля организации"
+    },
+    "organization.id": {
+      "label": "ID Организации",
+      "placeholder": "Введите диапазон"
+    },
+    "organization.name": {
+      "label": "Название Организации",
+      "placeholder": "Введите диапазон"
+    },
+    "organization.annualTurnover": {
+      "label": "Годовой оборот",
+      "placeholder": "Введите диапазон"
+    }
+  },
+  "statistics": {
+    "workers": "Работников",
+    "positions": "Должностей",
+    "oraganizations": "Организаций"
+  },
+  "advertisement": {
+    "0": "Здесь могла бы быть",
+    "1": "ваша реклама"
+  }
+}

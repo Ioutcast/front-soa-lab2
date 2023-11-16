@@ -21,6 +21,19 @@
   justify-content: center;
   padding: 15px;
 }
+.rotate-icon {
+  background: hsl(var(--clr-1));
+  display: flex;
+  width: 50px;
+  cursor: pointer;
+  justify-content: center;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+.rotate-icon__i {
+  display: flex;
+  justify-content: center;
+}
 .name__id {
   display: flex;
   align-items: center;
@@ -366,6 +379,7 @@
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
+  font-size: 24px;
   line-height: 2;
   -webkit-font-smoothing: antialiased;
 }
@@ -389,6 +403,10 @@
 .icon-user:before {
   content: "\e971";
 }
+.icon-refresh:before {
+  content: "\ea2e";
+}
+
 .icon-briefcase:before {
   content: "\e9ae";
 }
@@ -619,4 +637,21 @@ textarea {
 }
 .core-styles-module_tooltip__3vRRp {
   z-index: 2;
+}
+.rotate-icon.click {
+  cursor: pointer;
+  transition: var(--animation-2) ease;
+  transition-property: transform, color, background, text-shadow, opacity,
+    filter !important;
+  font-style: normal;
+}
+
+.rotate-icon.pressed {
+  transform: scale(0.5);
+}
+.icon-arrow-up:before {
+  content: "\ea32";
+}
+.icon-arrow-down:before {
+  content: "\ea36";
 }

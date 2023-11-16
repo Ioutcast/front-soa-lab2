@@ -9,8 +9,10 @@ import CreateWorkerForm from "./CreateWorkerForm";
 import { Tooltip } from "react-tooltip";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const AwasomeTable = () => {
+  const { t, i18n } = useTranslation();
   const [filterState, setFilterState] = useState({});
   const [loading, setLoading] = useState(false);
   const [jsonData, setJsonData] = useState(null);
@@ -136,7 +138,7 @@ const AwasomeTable = () => {
         queryParams.append(`sortElements`, field);
       });
 
-      queryParams.append("isUpper", "true");
+      queryParams.append("isUpper", arrowUp);
       queryParams.append("pageSize", String(pagination.pageSize));
       queryParams.append("page", String(parseInt(pageCur) - 1));
       const queryString = queryParams.toString();
@@ -171,7 +173,6 @@ const AwasomeTable = () => {
               let index = 0;
               try {
                 const transformedDataArray = content.map((contentItem) => {
-                  console.log(contentItem)
                   const transformedObj = {};
                   transformedObj.key = index++;
                   transformedObj.id = contentItem.id[0];
@@ -185,17 +186,18 @@ const AwasomeTable = () => {
                   transformedObj.startDate = contentItem.startDate[0];
                   transformedObj.endDate = contentItem.endDate[0];
                   transformedObj.position = contentItem.position[0];
-                  console.log(contentItem.Organization[0]=="")
+                  console.log(contentItem.Organization[0] == "");
 
-                  contentItem.Organization[0] !== "" ?
-                  transformedObj.Organization = {
-                    id: contentItem.Organization[0].id[0],
-                    fullName: contentItem.Organization[0].fullName[0],
-                    annualTurnover: parseFloat(
-                      contentItem.Organization[0].annualTurnover[0]
-                    ),
-                  } : transformedObj.Organization = null;
-                
+                  contentItem.Organization[0] !== ""
+                    ? (transformedObj.Organization = {
+                        id: contentItem.Organization[0].id[0],
+                        fullName: contentItem.Organization[0].fullName[0],
+                        annualTurnover: parseFloat(
+                          contentItem.Organization[0].annualTurnover[0]
+                        ),
+                      })
+                    : (transformedObj.Organization = null);
+
                   return transformedObj;
                 });
                 setJsonData(transformedDataArray);
@@ -264,7 +266,26 @@ const AwasomeTable = () => {
     }
     setClickedElements(updatedClickedElements);
   };
+  const [isRotated, setRotated] = useState(false);
+  const [isAnimating, setAnimating] = useState(false);
 
+  const rotareF = (event) => {
+    if (!isAnimating) {
+      setAnimating(true);
+      setRotated(true);
+
+      setTimeout(() => {
+        setRotated(false);
+        setAnimating(false);
+      }, 200);
+      loadData(1);
+    }
+  };
+  const [arrowUp, setArrowUp] = useState(true);
+  const changeArrow = () => {
+    setArrowUp(!arrowUp);
+    loadData(1);
+  };
   return (
     <>
       <Tooltip id="my-tooltip" />
@@ -272,25 +293,26 @@ const AwasomeTable = () => {
         <div className="statistics welcome-screen">
           <div className="count-stat click" style={{ paddingRight: 15 }}>
             <h1 style={{ color: "#65687B" }}>{pagination.total}</h1>
-            <a style={{ color: "#65687B" }}>работников</a>
+            <a style={{ color: "#65687B" }}>{t("statistics.workers")}</a>
           </div>
           <div className="mini-statistics">
             <div className="positions click" style={{ marginTop: 10 }}>
-              <h2>4</h2>
-              <a style={{ color: "#65687B" }}>позиций</a>
+              <h2>0</h2>
+              <a style={{ color: "#65687B" }}>{t("statistics.positions")}</a>
             </div>
             <div class="dotted-dot"></div>
             <div className="organizations click" style={{ marginTop: 10 }}>
-              <h2>5</h2>
-              <a style={{ color: "#65687B" }}>организаций</a>
+              <h2>0</h2>
+              <a style={{ color: "#65687B" }}>
+                {t("statistics.oraganizations")}
+              </a>
             </div>
           </div>
         </div>
       </div>
       <div className="filters">
         <div className="filter">
-          <div style={{ marginBottom: 10 }}>Worker Filters</div>
-
+          <div style={{ marginBottom: 10 }}>{t("filters.workerFilters")}</div>
           <div
             className="sort"
             data-tooltip-id="my-tooltip"
@@ -300,7 +322,12 @@ const AwasomeTable = () => {
           >
             <div className="sort__elements_title text-nowrap">
               <span class="icon-stack icon-spetc"></span>
-              <span>Sort Elements</span>
+              <span>{t("filters.sortElements.title")}:</span>
+            </div>
+            <div style={{ paddingRight: 40 }} onClick={changeArrow}>
+              <i
+                className={`${arrowUp ? "icon-arrow-up" : "icon-arrow-down"}`}
+              ></i>
             </div>
             <div className="input-v5 query__filter" style={{ width: "100%" }}>
               <input
@@ -310,9 +337,7 @@ const AwasomeTable = () => {
                 className="input__filter"
                 style={{ width: "100%" }}
                 type="text"
-                placeholder="id, name, x, y, creationDate, 
-                salary, startDate, endDate, position, organization.name,
-                 organization.annualTurnover"
+                placeholder={t("filters.sortElements.placeholder")}
               />
             </div>
           </div>
@@ -324,7 +349,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-user"></span>
-                <span>Name:</span>
+                <span>{t("filters.name.label")}:</span>
               </div>
               <div className="input-v3 name__filter">
                 <Tooltip id="my-tooltip2" />
@@ -338,7 +363,7 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.name.placeholder")}
                 />
               </div>
             </div>
@@ -350,7 +375,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-location"></span>
-                <span>Coord_x:</span>
+                <span>{t("filters.coordinates.x.label")}:</span>
               </div>
               <div className="input-v3 x__filter">
                 <Tooltip id="my-tooltip3" />
@@ -364,7 +389,7 @@ const AwasomeTable = () => {
                   className="input__filter -iNON"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.coordinates.x.placeholder")}
                 />
               </div>
             </div>
@@ -375,7 +400,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-location2"></span>
-                <span>Coord_y:</span>
+                <span>{t("filters.coordinates.y.label")}:</span>
               </div>
               <div className="input-v3 y__filter">
                 <Tooltip id="my-tooltip4" />
@@ -389,7 +414,7 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.coordinates.y.placeholder")}
                 />
               </div>
             </div>
@@ -402,7 +427,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-accessibility"></span>
-                <span>Creation Date:</span>
+                <span>{t("filters.creationdate.label")}</span>
               </div>
               <div className="input-v3 creationDate__filter">
                 <Tooltip id="my-tooltip5" />
@@ -416,7 +441,7 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.creationdate.placeholder")}
                 />
               </div>
             </div>
@@ -427,7 +452,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-neutral"></span>
-                <span>Start Date:</span>
+                <span>{t("filters.startdate.label")}:</span>
               </div>
               <div className="input-v3 startDate__filter">
                 <Tooltip id="my-tooltip6" />
@@ -441,7 +466,7 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.startdate.placeholder")}
                 />
               </div>
             </div>
@@ -452,7 +477,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-baffled"></span>
-                <span>End Date:</span>
+                <span>{t("filters.enddate.label")}:</span>
               </div>
               <div className="input-v3 endDate__filter">
                 <Tooltip id="my-tooltip67" />
@@ -466,7 +491,7 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.enddate.placeholder")}
                 />
               </div>
             </div>
@@ -479,7 +504,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-arrow-up-right2"></span>
-                <span>Salary:</span>
+                <span>{t("filters.salary.label")}:</span>
               </div>
               <div className="input-v3 salary__filter">
                 <Tooltip id="my-tooltip63" />
@@ -493,7 +518,7 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.salary.placeholder")}
                 />
               </div>
             </div>
@@ -504,7 +529,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-embed"></span>
-                <span>Position:</span>
+                <span>{t("filters.position.label")}:</span>
               </div>
               <div className="input-v3 position__filter">
                 <Tooltip id="my-tooltip633" />
@@ -518,12 +543,12 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.position.placeholder")}
                 />
               </div>
             </div>
           </div>
-          <div>Organization</div>
+          <div>{t("filters.organization.fields.label")}</div>
           <div className="filter_flex">
             <div
               className={`outer ${
@@ -532,7 +557,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-embed"></span>
-                <span>Id:</span>
+                <span>{t("filters.organization.id.label")}:</span>
               </div>
               <div className="input-v3 Organization__id__filter">
                 <Tooltip id="my-tooltip6233" />
@@ -546,7 +571,7 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.organization.id.placeholder")}
                 />
               </div>
             </div>
@@ -557,7 +582,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-flickr4"></span>
-                <span>Name:</span>
+                <span>{t("filters.organization.name.label")}:</span>
               </div>
               <div className="input-v3 Organization__name__filter">
                 <Tooltip id="my-tooltip62323" />
@@ -571,7 +596,7 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t("filters.organization.name.placeholder")}
                 />
               </div>
             </div>
@@ -585,7 +610,7 @@ const AwasomeTable = () => {
             >
               <div class="txt-nowrap">
                 <span class="icon-libreoffice"></span>
-                <span>Annual Turnover:</span>
+                <span>{t("filters.organization.annualTurnover.label")}:</span>
               </div>
               <div className="input-v3 Organization__annualTurnover__filter">
                 <Tooltip id="my-tooltip623231" />
@@ -601,10 +626,19 @@ const AwasomeTable = () => {
                   className="input__filter"
                   style={{ width: "100%" }}
                   type="text"
-                  placeholder="Type range"
+                  placeholder={t(
+                    "filters.organization.annualTurnover.placeholder"
+                  )}
                 />
               </div>
             </div>
+          </div>
+          <div className={`rotate-icon click ${isRotated ? "pressed" : ""}`}>
+            <i
+              className="icon-refresh rotate-icon__i"
+              onClick={(event) => rotareF(event)}
+              style={{ marginRight: 0 }}
+            ></i>
           </div>
         </div>
       </div>
@@ -682,8 +716,8 @@ const AwasomeTable = () => {
                   )
                 ) : (
                   <>
-                    <h1 style={{ color: "#65687B" }}>Здесь могла бы быть</h1>
-                    <a style={{ color: "#65687B" }}>ваша реклама</a>
+                    <h1 style={{ color: "#65687B" }}>{t("advertisement.0")}</h1>
+                    <a style={{ color: "#65687B" }}>{t("advertisement.1")}</a>
                   </>
                 )}
               </div>

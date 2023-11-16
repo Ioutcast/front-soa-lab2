@@ -3,15 +3,9 @@ import "../styles/Worker.css";
 import axios from "axios";
 import xml2js, { parseString } from "xml2js";
 import { toast } from "react-toastify";
-const UpdateWorkerForm = ({ worker, onUpdateWorker,loadData }) => {
+const UpdateWorkerForm = ({ worker, onUpdateWorker, loadData }) => {
   const [updatedWorker, setUpdatedWorker] = useState({ ...worker });
 
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   console.log(updatedWorker);
-  //   console.log(`[${name}]: ${value}`);
-  //   setUpdatedWorker({ ...updatedWorker, [name]: value });
-  // };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const updated = { ...updatedWorker };
@@ -71,7 +65,7 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker,loadData }) => {
           : console.log("Ошибка увольнения");
         // toast("Ошибка увольнения");
       });
-      loadData(1);
+    loadData(1);
   };
   return (
     <div className="">

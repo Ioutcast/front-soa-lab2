@@ -3,8 +3,10 @@ import WorkerService from "../API/WorkerService";
 import { parseString } from "xml2js";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 export const Hr = () => {
+  const { t, i18n } = useTranslation();
   const { Item } = Form;
   const [jsonData, setJsonData] = useState(null);
   const [showTable, setShowTable] = useState(false);

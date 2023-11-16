@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState, createRef } from "react";
 import { useNavigate } from "react-router-dom";
 import welcome from "../mp3f/osu.mp3";
 import useSound from "use-sound";
+import { useTranslation } from "react-i18next";
+
 export const WelcomeP = ({ updateData }) => {
+  const { t, i18n } = useTranslation();
+
   const [play] = useSound(welcome);
   const navigate = useNavigate();
   const smallDotsRefs = Array.from({ length: 33 }, () => createRef());
@@ -159,7 +163,7 @@ export const WelcomeP = ({ updateData }) => {
               transform: "matrix(1, 0, 0, 1, 0, 0)",
             }}
           >
-            Нажмите и перетащите кружок,
+            {t("welcome.0")}
           </div>
           <div
             style={{
@@ -171,7 +175,7 @@ export const WelcomeP = ({ updateData }) => {
               transform: "matrix(1, 0, 0, 1, 0, 0)",
             }}
           >
-            чтобы открыть лабу по СОА!
+            {t("welcome.1")}
           </div>
         </div>
       </div>

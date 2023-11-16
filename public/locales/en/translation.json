@@ -1,0 +1,79 @@
+{
+  "welcome": {
+    "0": "Click and grag the circle,",
+    "1": "to open the SOA lab!"
+  },
+  "creator": {
+    "0": "Vasilkov",
+    "1": "Yihun"
+  },
+  "menu": {
+    "table": "Table",
+    "hr": "Hr",
+    "extra": "Extra",
+    "create": "Create"
+  },
+  "filters": {
+    "workerFilters": "Worker Filters",
+    "sortElements": {
+      "title": "Sort Elements",
+      "placeholder": "id, name, x, y, creationDate, salary, startDate, endDate, position, organization.name, organization.annualTurnover"
+    },
+    "name": {
+      "label": "Name",
+      "placeholder": "Type range"
+    },
+    "coordinates.x": {
+      "label": "Coord_x",
+      "placeholder": "Type range"
+    },
+    "coordinates.y": {
+      "label": "Coord_y",
+      "placeholder": "Type range"
+    },
+    "creationdate": {
+      "label": "Creation Date",
+      "placeholder": "Type range"
+    },
+    "startdate": {
+      "label": "Start Date",
+      "placeholder": "Type range"
+    },
+    "enddate": {
+      "label": "End Date",
+      "placeholder": "Type range"
+    },
+    "salary": {
+      "label": "Salary",
+      "placeholder": "Type range"
+    },
+    "position": {
+      "label": "Position",
+      "placeholder": "Type range"
+    },
+    "organization.fields": {
+      "label": "Organization Fields"
+    },
+    "organization.id": {
+      "label": "Organization Id",
+      "placeholder": "Type range"
+    },
+    "organization.name": {
+      "label": "Organization Name",
+      "placeholder": "Type range"
+    },
+    "organization.annualTurnover": {
+      "label": "Annual Turnover",
+      "placeholder": "Type range"
+    }
+  },
+  "statistics": {
+    "workers": "Workers",
+    "positions": "Positions",
+    "oraganizations": "Organizations"
+  },
+  "advertisement": {
+    "0": "Here could be your advertisement.",
+    "1": ":)"
+  }
+}

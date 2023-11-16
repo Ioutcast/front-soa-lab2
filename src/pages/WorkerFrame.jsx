@@ -33,7 +33,6 @@ const WorkerFrame = ({ worker, loadData }) => {
     delete values.key;
     values.Coordinates = values.Coordinate;
     delete values.Coordinate;
-    values.creationDate = values.creationDate + "Z";
     console.log("values=", values);
     const builder = new xml2js.Builder({ rootName: "WorkerInfo" });
     const xmlData = builder.buildObject(values);

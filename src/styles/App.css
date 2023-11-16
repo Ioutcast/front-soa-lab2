@@ -276,7 +276,7 @@ p {
 .nav_create {
   display: flex;
   color: #707489;
-  padding: 25px;
+  padding: 15px;
   /* gap: 0.6em; */
   align-items: center;
   justify-content: center;
@@ -284,7 +284,7 @@ p {
   font-size: 25px;
   font-weight: 700;
   opacity: 0.5;
-  margin-top: 5px;
+  margin-top: 15px;
 }
 /* .block-v0 {
   background: hsl(var(--colour-1));
@@ -292,7 +292,7 @@ p {
 } */
 .nav {
   padding: 16px;
-  height: 56px;
+  height: 70px;
   text-align: center;
   align-items: center;
   border-radius: 0px 0px 20px 20px;
@@ -497,4 +497,21 @@ body {
   top: 2px;
   width: 4px;
   margin: auto 10px auto 10px;
+}
+.menu__inner .click {
+  cursor: pointer;
+  transition: var(--animation-2) ease;
+  transition-property: transform, color, background, text-shadow, opacity,
+    filter !important;
+}
+.menu__inner .click:hover {
+  transform: translateY(-1px);
+  opacity: 1;
+}
+.flag {
+  width: 1.5em;
+  margin-top: 10;
+}
+.flag_wrap {
+  padding-left: 30px;
 }

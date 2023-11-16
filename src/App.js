@@ -11,29 +11,33 @@ import AwasomeTable from "./pages/AwasomeTable";
 import Menu from "./pages/Menu";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
+
 function App() {
-    const [firstTime, setFirstTime] = useState(false);
-    const updateData = (value) => {
-        setFirstTime(value);
-    };
-    // usePreventZoom();
-    return (
+  const { t, i18n } = useTranslation();
+
+  const [firstTime, setFirstTime] = useState(false);
+  const updateData = (value) => {
+    setFirstTime(value);
+  };
+  // usePreventZoom();
+  return (
+    <>
+      <ToastContainer />
+      <Menu></Menu>
+      {firstTime ? (
         <>
-            <ToastContainer />
-            <Menu></Menu>
-            {firstTime ? (
-                <>
-                    <Routes>
-                        <Route path="/" element={<AwasomeTable />} />
-                        <Route path="/extra" element={<Extra />} />
-                        <Route path="/hr" element={<Hr />} />
-                        <Route path="/create" element={<WorkerTable />} />
-                    </Routes>
-                </>
-            ) : (
-                <WelcomeP updateData={updateData} />
-            )}
+          <Routes>
+            <Route path="/" element={<AwasomeTable />} />
+            <Route path="/extra" element={<Extra />} />
+            <Route path="/hr" element={<Hr />} />
+            <Route path="/create" element={<WorkerTable />} />
+          </Routes>
         </>
-    );
+      ) : (
+        <WelcomeP updateData={updateData} />
+      )}
+    </>
+  );
 }
 export default App;
