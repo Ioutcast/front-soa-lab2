@@ -146,7 +146,7 @@ export const Hr = () => {
           pagination={false}
         ></Table>
       )}
-      <div className="form-container">
+      <div className="form-container" style={{ marginTop: 50 }}>
         <Form
           style={{ backgroundColor: "white" }}
           form={form}

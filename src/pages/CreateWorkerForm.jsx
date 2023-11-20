@@ -113,7 +113,9 @@ const CreateWorkerForm = ({ create, onChangeCreate }) => {
       onChangeCreate();
     }
   };
-
+  const onClickExit = () => {
+    console.log("asdf");
+  };
   return (
     <div
       className="create-worker-form"
@@ -122,7 +124,7 @@ const CreateWorkerForm = ({ create, onChangeCreate }) => {
       <div>
         <h2>Create Worker</h2>
       </div>
-      <div>
+      <div onClick={onClickExit}>
         <form>
           <div className="form-group">
             <label>Position</label>
