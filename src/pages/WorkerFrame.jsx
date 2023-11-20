@@ -25,11 +25,8 @@ const WorkerFrame = ({ worker, loadData }) => {
     let values = updatedWorker;
     let id = values.id;
     delete values.id;
-    const organization = {
-      id: values.organization_id,
-      fullName: values.organization_fullName,
-      annualTurnover: values.organization_annualTurnover,
-    };
+
+    if (values.Organization == undefined) delete values.Organization;
     delete values.key;
     values.Coordinates = values.Coordinate;
     delete values.Coordinate;

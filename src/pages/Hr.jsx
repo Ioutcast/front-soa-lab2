@@ -147,7 +147,11 @@ export const Hr = () => {
         ></Table>
       )}
       <div className="form-container">
-        <Form form={form} onFinish={onFinish}>
+        <Form
+          style={{ backgroundColor: "white" }}
+          form={form}
+          onFinish={onFinish}
+        >
           <Item
             name="workerId"
             label="ID сотрудника"

@@ -17,7 +17,7 @@
     "workerFilters": "Фильтры",
     "sortElements": {
       "title": "Элементы сортировки",
-      "placeholder": "id, name, x, y, creationDate, salary, startDate, endDate, position, organization.name, organization.annualTurnover"
+      "placeholder": "id, name, x, y, creationDate, salary, startDate, endDate, position, organization.fullName, organization.annualTurnover"
     },
     "name": {
       "label": "Имя",

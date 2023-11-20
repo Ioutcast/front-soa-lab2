@@ -17,7 +17,7 @@
     "workerFilters": "Worker Filters",
     "sortElements": {
       "title": "Sort Elements",
-      "placeholder": "id, name, x, y, creationDate, salary, startDate, endDate, position, organization.name, organization.annualTurnover"
+      "placeholder": "id, name, x, y, creationDate, salary, startDate, endDate, position, organization.fullName, organization.annualTurnover"
     },
     "name": {
       "label": "Name",

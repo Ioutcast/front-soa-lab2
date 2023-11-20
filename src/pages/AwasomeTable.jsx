@@ -16,13 +16,13 @@ const AwasomeTable = () => {
   const [filterState, setFilterState] = useState({});
   const [loading, setLoading] = useState(false);
   const [jsonData, setJsonData] = useState(null);
-  const [isSortAscending, setIsSortAscending] = useState(null);
   const [sortFields, setSortFields] = useState([]);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
+  const [arrowUp, setArrowUp] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
   const [codeMsg, setCodeMsg] = useState(500);
   const handleChangeSort = (event) => {
@@ -61,7 +61,7 @@ const AwasomeTable = () => {
   };
   const handleChange = (event) => {
     const pattern =
-      /^(!=|=|<|>|<=|>=)\s*(\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(Z)?)?|[a-zA-Z0-9]+)$/;
+      /^(!=|=|<|>|<=|>=)\s*(\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(Z)?)?|[a-zA-Zа-яА-Я0-9]+)$/;
 
     let inputValue = event.target.value;
     let columnKey = event.target.id;
@@ -74,7 +74,7 @@ const AwasomeTable = () => {
       return;
     }
     const pattern1 =
-      /^(!=|=|<|>|<=|>=)\s*(\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(Z)?)?|[a-zA-Z0-9]+)$/;
+      /^(!=|=|<|>|<=|>=)\s*(\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(Z)?)?|[a-zA-Zа-яА-Я0-9]+)$/;
 
     const match = inputValue.match(pattern1);
     if (match) {
@@ -93,7 +93,7 @@ const AwasomeTable = () => {
   };
   useEffect(() => {
     loadData(1);
-  }, [filterState, sortFields]);
+  }, [filterState, sortFields, arrowUp]);
   const onClickRight = () => {
     if (pagination.total / pagination.pageSize > pagination.current)
       setPagination({
@@ -124,6 +124,8 @@ const AwasomeTable = () => {
         const filter = filterState[columnKey];
         if (filter.operator && filter.value) {
           if (columnKey == "x") columnKey = "coordinates.x";
+          if (columnKey == "organization.name")
+            columnKey = "organization.fullName";
           if (columnKey == "y") columnKey = "coordinates.y";
           if (columnKey == "startDate") columnKey = "startdate";
           if (columnKey == "endDate") columnKey = "enddate";
@@ -281,14 +283,14 @@ const AwasomeTable = () => {
       loadData(1);
     }
   };
-  const [arrowUp, setArrowUp] = useState(true);
   const changeArrow = () => {
     setArrowUp(!arrowUp);
-    loadData(1);
   };
+
   return (
     <>
       <Tooltip id="my-tooltip" />
+
       <div className="statistics">
         <div className="statistics welcome-screen">
           <div className="count-stat click" style={{ paddingRight: 15 }}>
@@ -324,7 +326,7 @@ const AwasomeTable = () => {
               <span class="icon-stack icon-spetc"></span>
               <span>{t("filters.sortElements.title")}:</span>
             </div>
-            <div style={{ paddingRight: 40 }} onClick={changeArrow}>
+            <div style={{ paddingRight: 40 }} onClick={() => changeArrow()}>
               <i
                 className={`${arrowUp ? "icon-arrow-up" : "icon-arrow-down"}`}
               ></i>
@@ -355,7 +357,7 @@ const AwasomeTable = () => {
                 <Tooltip id="my-tooltip2" />
                 <input
                   data-tooltip-id="my-tooltip2"
-                  data-tooltip-content="Пример допустимого ввода: != = (вводимые данные)"
+                  data-tooltip-content="Пример допустимого ввода: != = < >(вводимые данные)"
                   onClick={() => handleElementClick("name")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -535,7 +537,7 @@ const AwasomeTable = () => {
                 <Tooltip id="my-tooltip633" />
                 <input
                   data-tooltip-id="my-tooltip633"
-                  data-tooltip-content="Пример допустимого ввода: = !=(вводимые данные)"
+                  data-tooltip-content="Пример допустимого ввода: = != < >(вводимые данные)"
                   onClick={() => handleElementClick("position")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
@@ -588,7 +590,7 @@ const AwasomeTable = () => {
                 <Tooltip id="my-tooltip62323" />
                 <input
                   data-tooltip-id="my-tooltip62323"
-                  data-tooltip-content="Пример допустимого ввода: = != (вводимые данные)"
+                  data-tooltip-content="Пример допустимого ввода: = != < >(вводимые данные)"
                   onClick={() => handleElementClick("organization.name")}
                   onKeyDown={handleKeyDown}
                   onBlur={handleChange}
