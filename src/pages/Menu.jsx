@@ -74,7 +74,7 @@ const Menu = () => {
               >
                 <img
                   className="flag"
-                  src={`/images/${currentLanguage.toUpperCase()}.png`}
+                  src={`/~s284699/soa-front/images/${currentLanguage.toUpperCase()}.png`}
                   alt="asd"
                 />
               </div>

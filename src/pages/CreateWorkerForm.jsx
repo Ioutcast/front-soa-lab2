@@ -43,6 +43,7 @@ const CreateWorkerForm = ({ create, onChangeCreate }) => {
   };
   const handleCreateWorker = async () => {
     const updatedWorker = { ...newWorker };
+    updatedWorker.position = updatedWorker.position.toUpperCase();
     updatedWorker.Organization = {
       id: updatedWorker.organizationId,
       fullName: updatedWorker.organizationName,
@@ -113,9 +114,7 @@ const CreateWorkerForm = ({ create, onChangeCreate }) => {
       onChangeCreate();
     }
   };
-  const onClickExit = () => {
-    console.log("asdf");
-  };
+
   return (
     <div
       className="create-worker-form"
@@ -124,7 +123,7 @@ const CreateWorkerForm = ({ create, onChangeCreate }) => {
       <div>
         <h2>Create Worker</h2>
       </div>
-      <div onClick={onClickExit}>
+      <div>
         <form>
           <div className="form-group">
             <label>Position</label>

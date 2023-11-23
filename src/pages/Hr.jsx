@@ -25,16 +25,16 @@ export const Hr = () => {
       dataIndex: "name",
     },
     {
-      title: "Coordinate",
+      title: "Coordinates",
       children: [
         {
           title: "X",
-          dataIndex: ["Coordinate", "coordinates_x"],
+          dataIndex: ["Coordinates", "x"],
           key: "5",
         },
         {
           title: "Y",
-          dataIndex: ["Coordinate", "coordinates_y"],
+          dataIndex: ["Coordinates", "y"],
           key: "5",
         },
       ],

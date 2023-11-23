@@ -8,13 +8,15 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    backend: {
+      loadPath: "/~s284699/soa-front/locales/{{lng}}/{{ns}}.json",
+    },
     fallbackLng: "ru",
     debug: false,
     detection: {
       order: ["queryString", "cookie"],
       cache: ["cookie"],
     },
-    // Распознавание и кэширование языковых кук
     interpolation: {
       escapeValue: false,
     },
