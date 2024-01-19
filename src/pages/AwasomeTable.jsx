@@ -145,7 +145,7 @@ const AwasomeTable = () => {
       queryParams.append("page", String(parseInt(pageCur) - 1));
       const queryString = queryParams.toString();
 
-      const url = `https://localhost:9000/company/workers?${queryString}`;
+      const url = `https://localhost:5678/company/workers?${queryString}`;
       const response = await axios.get(url).catch((err) => {
         parseString(err.response.data, (err, result) => {
           setErrorMsg(result.Error.message[0]);
