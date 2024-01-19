@@ -30,7 +30,7 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker, loadData }) => {
   };
   const handleDelete = async () => {
     const response = await axios
-      .delete(`https://localhost:9000/company/workers/${updatedWorker.id}`)
+      .delete(`https://localhost:5678/company/workers/${updatedWorker.id}`)
       .catch((error) => {
         error.response?.data
           ? parseString(error.response.data, (err, result) => {
@@ -50,7 +50,7 @@ const UpdateWorkerForm = ({ worker, onUpdateWorker, loadData }) => {
   const handleHrDelere = async () => {
     onUpdateWorker();
     const response = await axios
-      .delete(`https://localhost:9090/server2/hr/fire/${updatedWorker.id}`)
+      .delete(`https://localhost:5678/server2/hr/fire/${updatedWorker.id}`)
       .catch((error) => {
         error.response?.data
           ? parseString(error.response.data, (err, result) => {

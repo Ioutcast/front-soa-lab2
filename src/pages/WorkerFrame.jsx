@@ -34,7 +34,7 @@ const WorkerFrame = ({ worker, loadData }) => {
     const builder = new xml2js.Builder({ rootName: "WorkerInfo" });
     const xmlData = builder.buildObject(values);
     const response = await axios
-      .put(`https://localhost:9000/company/workers/${id}`, xmlData, {
+      .put(`https://localhost:5678/company/workers/${id}`, xmlData, {
         headers: {
           "Content-Type": "application/xml",
         },

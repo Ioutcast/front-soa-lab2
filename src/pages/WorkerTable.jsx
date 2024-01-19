@@ -65,7 +65,7 @@ export const WorkerTable = () => {
       queryParams.append("page", String(parseInt(pageCur) - 1));
       const queryString = queryParams.toString();
 
-      const url = `https://localhost:9000/company/workers?${queryString}`;
+      const url = `https://localhost:5678/company/workers?${queryString}`;
       const response = await axios.get(url).catch((err) => {
         console.log(err);
       });
@@ -669,7 +669,7 @@ export const WorkerTable = () => {
         const builder = new xml2js.Builder({ rootName: "CreateWorkerRequest" });
         const xmlData = builder.buildObject(values);
         const response = await axios
-          .post(`https://localhost:9000/company/workers`, xmlData, {
+          .post(`https://localhost:5678/company/workers`, xmlData, {
             headers: {
               "Content-Type": "text/xml",
             },
@@ -705,7 +705,7 @@ export const WorkerTable = () => {
     const builder = new xml2js.Builder({ rootName: "WorkerInfo" });
     const xmlData = builder.buildObject(values);
     const response = await axios
-      .put(`https://localhost:9000/company/workers/${id}`, xmlData, {
+      .put(`https://localhost:5678/company/workers/${id}`, xmlData, {
         headers: {
           "Content-Type": "application/xml",
         },
